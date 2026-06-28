@@ -118,9 +118,9 @@ function setResultsLoading(v) {
 // ─── Render Captions ────────────────────────────────────────────────────────
 function renderCaptions(captions) {
   captionsContainer.innerHTML = captions.map(c => `
-    <div class="caption-card relative bg-surface-100 rounded-xl p-3 sm:p-4 pr-12 sm:pr-14 animate-slide-up">
-      <p class="text-xs sm:text-sm text-gray-200 leading-relaxed">${escapeHtml(c.text)}</p>
-      <button class="copy-caption-btn absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 rounded-lg text-gray-500 hover:text-brand-300 hover:bg-brand-500/10 transition-all duration-200"
+    <div class="caption-card relative bg-surface-100 rounded-xl p-3.5 sm:p-4 pr-12 sm:pr-14 animate-slide-up">
+      <p class="text-sm sm:text-base text-gray-200 leading-relaxed">${escapeHtml(c.text)}</p>
+      <button class="copy-caption-btn absolute top-2.5 right-2.5 sm:top-3 sm:right-3 p-1.5 rounded-lg text-gray-500 hover:text-brand-300 hover:bg-brand-500/10 transition-all duration-200"
         data-text="${escapeHtml(c.text)}" title="Copy caption">
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
       </button>
