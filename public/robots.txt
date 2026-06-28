@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ai-caption-genie.onrender.com/sitemap.xml
