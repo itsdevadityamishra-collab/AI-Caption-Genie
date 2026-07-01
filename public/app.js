@@ -46,6 +46,9 @@ const previewUsername   = document.getElementById('previewUsername');
 const previewCaption    = document.getElementById('previewCaption');
 const previewHashtags   = document.getElementById('previewHashtags');
 const previewAvatar     = document.getElementById('previewAvatar');
+const navHome           = document.getElementById('navHome');
+const navHistory        = document.getElementById('navHistory');
+const navAdmin          = document.getElementById('navAdmin');
 
 let emojisEnabled = true;
 let lastResult = null;
@@ -300,11 +303,13 @@ function renderHistory() {
   if (h.length === 0) { historyBar.classList.add('hidden'); return; }
   historyBar.classList.remove('hidden');
   historyList.innerHTML = h.map(e => `
-    <div class="history-item flex-shrink-0 glass-card rounded-xl p-3 min-w-[160px] max-w-[200px]" onclick="loadHistoryItem(getHistory().find(x=>x.id===${e.id}))">
-      <p class="text-xs font-medium text-surface-800 truncate">${escapeHtml(e.topic.substring(0, 40))}</p>
-      <p class="text-[10px] text-surface-400 mt-0.5">${escapeHtml(e.tone)} · ${escapeHtml(e.platform)}</p>
-      <p class="text-[10px] text-surface-400">${new Date(e.savedAt).toLocaleDateString()}</p>
-      <button class="text-[10px] text-red-400 hover:text-red-600 mt-1" onclick="event.stopPropagation();deleteHistoryItem(${e.id})">Delete</button>
+    <div class="history-chip" onclick="loadHistoryItem(getHistory().find(x=>x.id===${e.id}))">
+      <p style="font-size:12px;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;">${escapeHtml(e.topic.substring(0, 30))}</p>
+      <p style="font-size:10px;color:#94a3b8;margin-top:2px;">${escapeHtml(e.tone)} · ${escapeHtml(e.platform)}</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+        <span style="font-size:9px;color:#cbd5e1;">${new Date(e.savedAt).toLocaleDateString()}</span>
+        <span style="font-size:10px;color:#ef4444;cursor:pointer;" onclick="event.stopPropagation();deleteHistoryItem(${e.id})">✕</span>
+      </div>
     </div>
   `).join('');
 }
@@ -314,11 +319,12 @@ clearHistoryBtn.addEventListener('click', () => {
 });
 
 // ─── Page Switching ─────────────────────────────────────────────────────────
-function showInputPage() {
+ function showInputPage() {
   resultsPage.classList.add('hidden');
   inputPage.classList.remove('hidden');
   document.body.style.overflow = '';
   generationCount = 0;
+  setActiveNav(navHome);
 }
 
 function showResultsPage() {
@@ -743,7 +749,6 @@ renderHistory();
 
 // ─── Admin Panel ─────────────────────────────────────────────────────────────
 const adminOverlay      = document.getElementById('adminOverlay');
-const adminModal        = document.getElementById('adminModal');
 const adminLoginView    = document.getElementById('adminLoginView');
 const adminDataView     = document.getElementById('adminDataView');
 const adminNameInput    = document.getElementById('adminNameInput');
@@ -752,12 +757,10 @@ const adminLoginBtn     = document.getElementById('adminLoginBtn');
 const adminLogoutBtn    = document.getElementById('adminLogoutBtn');
 const adminCloseBtn     = document.getElementById('adminCloseBtn');
 const adminError        = document.getElementById('adminError');
-const adminTotalVisits  = document.getElementById('adminTotalVisits');
 const adminUniqueUsers  = document.getElementById('adminUniqueUsers');
 const adminVisitorsTable = document.getElementById('adminVisitorsTable');
-const adminPanelBtn     = document.getElementById('adminPanelBtn');
 
-adminPanelBtn.addEventListener('click', () => {
+function openAdminPanel() {
   adminOverlay.classList.remove('hidden');
   adminLoginView.classList.remove('hidden');
   adminDataView.classList.add('hidden');
@@ -765,6 +768,30 @@ adminPanelBtn.addEventListener('click', () => {
   adminNameInput.value = '';
   adminPassInput.value = '';
   adminNameInput.focus();
+}
+
+// ─── Bottom Nav ──────────────────────────────────────────────────────────────
+function setActiveNav(active) {
+  [navHome, navHistory, navAdmin].forEach(b => b.classList.remove('active'));
+  if (active) active.classList.add('active');
+}
+
+navHome.addEventListener('click', () => {
+  setActiveNav(navHome);
+  showInputPage();
+});
+
+navHistory.addEventListener('click', () => {
+  setActiveNav(navHistory);
+  showInputPage();
+  historyBar.classList.remove('hidden');
+  renderHistory();
+  historyBar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+navAdmin.addEventListener('click', () => {
+  setActiveNav(navAdmin);
+  openAdminPanel();
 });
 
 adminCloseBtn.addEventListener('click', () => adminOverlay.classList.add('hidden'));
