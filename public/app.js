@@ -1,32 +1,19 @@
 // ─── DOM ────────────────────────────────────────────────────────────────────
 const toast           = document.getElementById('toast');
-const loginOverlay    = document.getElementById('loginOverlay');
-const loginNameInput   = document.getElementById('loginNameInput');
-const loginBtn         = document.getElementById('loginBtn');
 const headerUserName  = document.getElementById('headerUserName');
-const tabContainer    = document.getElementById('tabContainer');
 const navItems        = document.querySelectorAll('.bottom-nav-item');
-const adminOverlay    = document.getElementById('adminOverlay');
-const adminLoginView  = document.getElementById('adminLoginView');
-const adminDataView   = document.getElementById('adminDataView');
-const adminNameInput   = document.getElementById('adminNameInput');
-const adminPassInput   = document.getElementById('adminPassInput');
-const adminLoginBtn    = document.getElementById('adminLoginBtn');
-const adminLogoutBtn   = document.getElementById('adminLogoutBtn');
-const adminCloseBtn    = document.getElementById('adminCloseBtn');
-const adminError       = document.getElementById('adminError');
-const adminUniqueUsers = document.getElementById('adminUniqueUsers');
-const adminVisitorsTable = document.getElementById('adminVisitorsTable');
 const previewOverlay  = document.getElementById('previewOverlay');
 const previewUsername = document.getElementById('previewUsername');
 const previewCaption  = document.getElementById('previewCaption');
 const previewHashtags = document.getElementById('previewHashtags');
 const previewAvatar   = document.getElementById('previewAvatar');
 
-let userName = '';
+let userName = 'User';
 let emojisEnabled = true;
 let lastCapResult = null;
 let lastTagResult = null;
+
+headerUserName.textContent = userName;
 
 // ─── Tab Switching ──────────────────────────────────────────────────────────
 function switchTab(tabName) {
@@ -72,42 +59,6 @@ function escapeHtml(str) {
 function debounce(fn, ms) {
   let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
 }
-
-// ─── Login ──────────────────────────────────────────────────────────────────
-function checkLogin() {
-  const stored = localStorage.getItem('acg_user');
-  if (stored) {
-    userName = stored;
-    headerUserName.textContent = userName;
-    loginOverlay.classList.add('hidden');
-    fetch('/api/track', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: stored }),
-    }).catch(() => {});
-  }
-}
-
-loginBtn.addEventListener('click', () => {
-  const name = loginNameInput.value.trim();
-  if (!name) { showToast('Please enter your name.'); return; }
-  userName = name;
-  localStorage.setItem('acg_user', name);
-  headerUserName.textContent = name;
-  loginOverlay.classList.add('hidden');
-  showToast('Welcome, ' + name + '!');
-  fetch('/api/track', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name }),
-  }).catch(() => {});
-});
-
-loginNameInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') loginBtn.click();
-});
-
-checkLogin();
 
 // ─── Custom Select ──────────────────────────────────────────────────────────
 function closeAllDropdowns() {
@@ -213,7 +164,7 @@ function renderCaptions(container, captions) {
     const id = c.id || idx;
     return `
     <div class="caption-card" data-caption-id="${id}">
-      <div class="caption-text" style="font-size:14px;color:#1e293b;line-height:1.6;margin-bottom:8px;">${escapeHtml(c.text)}</div>
+      <div class="caption-text">${escapeHtml(c.text)}</div>
       <div class="caption-edit hidden" style="margin-bottom:8px;">
         <textarea style="width:100%;padding:10px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;resize:none;outline:none;font-family:inherit;background:#f8fafc;" rows="3">${escapeHtml(c.text)}</textarea>
         <div style="display:flex;gap:8px;margin-top:6px;">
@@ -404,7 +355,6 @@ function capShowResults(v) {
 }
 
 async function handleCapGenerate() {
-  if (!userName) { loginOverlay.classList.remove('hidden'); return; }
   const topic = capTopic.value.trim();
   if (!topic) { showToast('Please describe your content topic first.'); capTopic.focus(); return; }
 
@@ -505,8 +455,8 @@ capShareBtn.addEventListener('click', () => {
 capPreviewBtn.addEventListener('click', () => {
   const captions = [...capCaptionsContainer.querySelectorAll('.caption-text')];
   if (captions.length === 0) { showToast('No captions.'); return; }
-  previewUsername.textContent = userName || 'User';
-  previewAvatar.textContent = (userName || 'U')[0].toUpperCase();
+  previewUsername.textContent = userName;
+  previewAvatar.textContent = userName[0].toUpperCase();
   previewCaption.textContent = captions[0].textContent.trim();
   previewHashtags.innerHTML = '';
   previewOverlay.classList.remove('hidden');
@@ -540,7 +490,6 @@ function tagLoading(v) {
 }
 
 async function handleTagGenerate() {
-  if (!userName) { loginOverlay.classList.remove('hidden'); return; }
   const topic = tagTopic.value.trim();
   if (!topic) { showToast('Please enter a topic for hashtags.'); tagTopic.focus(); return; }
 
@@ -719,10 +668,6 @@ document.querySelector('.app-bar-title')?.addEventListener('dblclick', () => {
 });
 
 // ─── MORE TAB ───────────────────────────────────────────────────────────────
-document.getElementById('moreAdminBtn').addEventListener('click', () => {
-  openAdminPanel();
-});
-
 document.getElementById('moreExportBtn').addEventListener('click', () => {
   const h = getHistory();
   if (h.length === 0) { showToast('No history to export.'); return; }
@@ -737,78 +682,6 @@ document.getElementById('moreExportBtn').addEventListener('click', () => {
   });
   downloadFile(lines.join('\n'), 'caption_history.txt', 'text/plain');
   showToast('History exported!');
-});
-
-// ─── ADMIN PANEL ────────────────────────────────────────────────────────────
-function openAdminPanel() {
-  adminOverlay.classList.remove('hidden');
-  adminLoginView.classList.remove('hidden');
-  adminDataView.classList.add('hidden');
-  adminError.classList.add('hidden');
-  adminNameInput.value = '';
-  adminPassInput.value = '';
-  adminNameInput.focus();
-}
-
-adminCloseBtn.addEventListener('click', () => adminOverlay.classList.add('hidden'));
-adminLogoutBtn.addEventListener('click', () => {
-  adminLoginView.classList.remove('hidden');
-  adminDataView.classList.add('hidden');
-  adminError.classList.add('hidden');
-});
-
-adminOverlay.addEventListener('click', e => {
-  if (e.target === adminOverlay) adminOverlay.classList.add('hidden');
-});
-
-adminPassInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') adminLoginBtn.click();
-});
-
-adminLoginBtn.addEventListener('click', async () => {
-  const name = adminNameInput.value.trim() || 'Admin';
-  const pass = adminPassInput.value.trim();
-  if (!pass) {
-    adminError.textContent = 'Please enter the admin password.';
-    adminError.classList.remove('hidden');
-    return;
-  }
-  adminLoginBtn.textContent = 'Checking...';
-  adminLoginBtn.disabled = true;
-  adminError.classList.add('hidden');
-
-  try {
-    const res = await fetch('/api/admin/visitors', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, password: pass }),
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Invalid credentials');
-    }
-    const data = await res.json();
-    adminUniqueUsers.textContent = data.unique;
-
-    adminVisitorsTable.innerHTML = data.visitors.slice().reverse().map(v => `
-      <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border-radius:12px;padding:10px 14px;">
-        <div>
-          <p style="font-size:13px;font-weight:500;color:#1e293b;">${escapeHtml(v.name)}</p>
-          <p style="font-size:10px;color:#94a3b8;">${new Date(v.timestamp).toLocaleString()}</p>
-        </div>
-        <span style="font-size:10px;color:#94a3b8;">${escapeHtml(v.ip)}</span>
-      </div>
-    `).join('');
-
-    adminLoginView.classList.add('hidden');
-    adminDataView.classList.remove('hidden');
-  } catch (err) {
-    adminError.textContent = err.message || 'Login failed. Try again.';
-    adminError.classList.remove('hidden');
-  } finally {
-    adminLoginBtn.textContent = 'Login';
-    adminLoginBtn.disabled = false;
-  }
 });
 
 // ─── Download helper ────────────────────────────────────────────────────────

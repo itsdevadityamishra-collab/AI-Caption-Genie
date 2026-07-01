@@ -1,26 +1,10 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ADMIN_KEY = process.env.ADMIN_KEY || 'admin123';
-const DATA_DIR = path.join(__dirname, 'data');
-const VISITORS_FILE = path.join(DATA_DIR, 'visitors.json');
-
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(VISITORS_FILE)) fs.writeFileSync(VISITORS_FILE, '[]');
-
-function getVisitors() {
-  try { return JSON.parse(fs.readFileSync(VISITORS_FILE, 'utf8')); }
-  catch { return []; }
-}
-
-function saveVisitors(data) {
-  fs.writeFileSync(VISITORS_FILE, JSON.stringify(data, null, 2));
-}
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -262,28 +246,6 @@ app.post('/api/variation', async (req, res) => {
   }
 });
 
-app.post('/api/track', (req, res) => {
-  const { name } = req.body;
-  if (!name) return res.status(400).json({ error: 'Name required' });
-
-  const visitors = getVisitors();
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
-  const entry = { name, ip, timestamp: new Date().toISOString() };
-  visitors.push(entry);
-  saveVisitors(visitors);
-  console.log(`👤 Visitor: ${name} from ${ip} (total: ${visitors.length})`);
-  res.json({ ok: true, total: visitors.length });
-});
-
-app.post('/api/admin/visitors', (req, res) => {
-  const { name, password } = req.body;
-  if (name !== 'Aditya6143' || password !== '6143') {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-  const visitors = getVisitors();
-  const unique = [...new Set(visitors.map(v => v.name.toLowerCase()))].length;
-  res.json({ unique, visitors });
-});
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
