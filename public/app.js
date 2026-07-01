@@ -249,3 +249,31 @@ topicInput.addEventListener('input', debounce(() => {
 
 topicInput.style.height = 'auto';
 topicInput.style.height = topicInput.scrollHeight + 'px';
+
+// ─── PWA ────────────────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.createElement('button');
+  btn.id = 'installAppBtn';
+  btn.style.cssText = 'position:fixed;bottom:24px;right:16px;z-index:999;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,.3);font-family:inherit;animation:slideUp .4s ease-out;';
+  btn.innerHTML = '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Install App';
+  btn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      if (result.outcome === 'accepted') btn.remove();
+      deferredPrompt = null;
+    }
+  });
+  document.body.appendChild(btn);
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installAppBtn')?.remove();
+});
