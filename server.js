@@ -40,6 +40,7 @@ app.post('/api/generate', async (req, res) => {
     tone = 'professional',
     platform = 'Instagram',
     emojis = true,
+    captionLength = 'medium',
     captionCount = 4,
     hashtagCount = 20,
   } = req.body;
@@ -63,6 +64,15 @@ app.post('/api/generate', async (req, res) => {
     storytelling: 'Narrative-driven with a beginning, middle, and hook.',
     hype: 'High-energy, bold, and hype-building. Use emojis and excitement.',
   };
+
+  const lengthGuide = {
+    'very short': '10-40 characters. Extremely brief, punchy, and concise. Just a few words.',
+    short: '40-80 characters. Short and to the point, minimal wording.',
+    medium: '80-160 characters. Balanced length, standard social media caption.',
+    long: '160-280 characters. Detailed and descriptive captions.',
+    'very long': '280-500 characters. In-depth, comprehensive captions with rich detail.',
+  };
+  const lengthRule = lengthGuide[captionLength] || lengthGuide.medium;
 
   const emojiRule = emojis
     ? 'Use relevant emojis in captions to boost engagement.'
@@ -96,7 +106,7 @@ Rules for captions:
 - Creative, engaging, and conversational.
 - Tone must be strictly "${tone}": ${toneGuide[tone] || toneGuide.professional}
 - Make them specific to ${platform} platform style.
-- Keep each caption between 50-280 characters.
+- Caption length: ${lengthRule}
 - No hashtags inside captions.
 - Generate exactly ${cc} captions.
 

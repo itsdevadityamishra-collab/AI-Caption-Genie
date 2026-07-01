@@ -9,6 +9,7 @@ const btnSpinner        = document.getElementById('btnSpinner');
 const backBtn           = document.getElementById('backBtn');
 const toneSelect        = document.getElementById('toneSelect');
 const platformSelect    = document.getElementById('platformSelect');
+const lengthSelect      = document.getElementById('lengthSelect');
 const emojiToggle       = document.getElementById('emojiToggle');
 const emojiThumb        = document.getElementById('emojiThumb');
 const emojiLabel        = document.getElementById('emojiLabel');
@@ -167,11 +168,11 @@ function renderHashtags(tags) {
 }
 
 // ─── API ─────────────────────────────────────────────────────────────────────
-async function generateContent(topic, tone, platform, emojis, captionCount, hashtagCount) {
+async function generateContent(topic, tone, platform, emojis, captionLength, captionCount, hashtagCount) {
   const res = await fetch('/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ topic, tone, platform, emojis, captionCount, hashtagCount }),
+    body: JSON.stringify({ topic, tone, platform, emojis, captionLength, captionCount, hashtagCount }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -201,6 +202,7 @@ async function handleGenerate() {
 
   const tone = toneSelect.value.toLowerCase();
   const platform = platformSelect.value;
+  const captionLength = lengthSelect.value.toLowerCase();
   const cc = Number(captionCount.value);
   const hc = Number(hashtagCount.value);
 
@@ -212,7 +214,7 @@ async function handleGenerate() {
   showResultsPage();
 
   try {
-    const data = await generateContent(topic, tone, platform, emojisEnabled, cc, hc);
+    const data = await generateContent(topic, tone, platform, emojisEnabled, captionLength, cc, hc);
     lastResult = data;
 
     renderCaptions(data.captions);
@@ -222,7 +224,8 @@ async function handleGenerate() {
     resultsHashtagCount.textContent = `${totalTags} tags`;
 
     const toneLabel = toneSelect.options[toneSelect.selectedIndex].text;
-    resultsMeta.textContent = `${toneLabel} · ${platform} · ${cc} captions · ${hc} tags`;
+    const lengthLabel = lengthSelect.options[lengthSelect.selectedIndex].text;
+    resultsMeta.textContent = `${toneLabel} · ${lengthLabel} · ${platform} · ${cc} captions · ${hc} tags`;
 
     // Hide skeleton, show content
     resultsSkeleton.classList.add('hidden');
