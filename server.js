@@ -43,6 +43,9 @@ app.post('/api/generate', async (req, res) => {
     captionLength = 'medium',
     captionCount = 4,
     hashtagCount = 20,
+    language = 'English',
+    keywords = '',
+    brandVoice = '',
   } = req.body;
 
   if (!topic || topic.trim().length === 0) {
@@ -52,7 +55,6 @@ app.post('/api/generate', async (req, res) => {
   const cc = Math.min(Math.max(Number(captionCount) || 4, 1), 100);
   const hc = Math.min(Math.max(Number(hashtagCount) || 20, 1), 50);
 
-  // Distribute hashtags roughly: 40% highTraffic, 35% niche, 25% location
   const ht = Math.round(hc * 0.4);
   const nn = Math.round(hc * 0.35);
   const ll = hc - ht - nn;
@@ -78,11 +80,22 @@ app.post('/api/generate', async (req, res) => {
     ? 'Use relevant emojis in captions to boost engagement.'
     : 'Do NOT use any emojis in captions. Keep them clean and text-only.';
 
+  const langRule = `Write all captions and hashtags in ${language}.`;
+  const keywordRule = keywords
+    ? `Naturally include these keywords in the captions: "${keywords}".`
+    : '';
+  const voiceRule = brandVoice
+    ? `Follow this brand voice/style: ${brandVoice}.`
+    : '';
+
   const systemPrompt = `You are a professional social media marketing expert and copywriter.
 
 Generate exactly ${cc} ${platform}-optimized social media captions in a "${tone}" tone.
 Tone guide: ${toneGuide[tone] || toneGuide.professional}
 ${emojiRule}
+${langRule}
+${keywordRule}
+${voiceRule}
 
 Also generate exactly ${hc} relevant hashtags split into three groups:
 - "highTraffic": Broad, popular tags (${ht} tags)
@@ -108,6 +121,7 @@ Rules for captions:
 - Make them specific to ${platform} platform style.
 - Caption length: ${lengthRule}
 - No hashtags inside captions.
+- Write in ${language}.
 - Generate exactly ${cc} captions.
 
 Rules for hashtags:
@@ -157,6 +171,31 @@ Rules for hashtags:
       error: 'Failed to generate content. Please check your API key and try again.',
       details: process.env.NODE_ENV === 'development' ? err.message : undefined,
     });
+  }
+});
+
+app.post('/api/variation', async (req, res) => {
+  const { text, direction } = req.body;
+  if (!text || !direction) {
+    return res.status(400).json({ error: 'Missing text or direction' });
+  }
+
+  const promptMap = {
+    longer: 'Make this caption LONGER by adding more detail, context, or descriptive language. Keep the same tone and message. Return ONLY the new caption text.',
+    shorter: 'Make this caption SHORTER and more concise. Cut fluff while keeping the core message. Return ONLY the new caption text.',
+    funnier: 'Rewrite this caption to be FUNNIER and more humorous. Add wit, wordplay, or a light-hearted twist. Return ONLY the new caption text.',
+  };
+
+  const systemPrompt = promptMap[direction] || promptMap.longer;
+
+  try {
+    const raw = await callGroq(systemPrompt, `Original caption: "${text}"`, 300);
+    const cleaned = raw.replace(/^["']|["']$/g, '').trim();
+    if (!cleaned || cleaned.length < 3) throw new Error('Empty response');
+    res.json({ text: cleaned });
+  } catch (err) {
+    console.error('Variation error:', err.message);
+    res.status(500).json({ error: 'Failed to generate variation.', text });
   }
 });
 

@@ -1,72 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth dark">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- ═══ Primary Meta ═══ -->
   <title>AI Caption Genie — Free AI Social Media Caption & Hashtag Generator</title>
-  <meta name="title" content="AI Caption Genie — Free AI Social Media Caption & Hashtag Generator" />
-  <meta name="description" content="Generate engaging AI-powered social media captions and high-traffic hashtags for Instagram, TikTok, LinkedIn & more. Free, fast, and platform-optimized." />
-  <meta name="keywords" content="AI caption generator, social media hashtags, Instagram captions, TikTok captions, LinkedIn posts, AI content generator, free AI tool" />
-  <meta name="robots" content="index, follow" />
-  <meta name="language" content="English" />
-  <meta name="author" content="AI Caption Genie" />
-  <meta name="theme-color" content="#0a0e1a" />
-  <link rel="canonical" href="https://ai-caption-genie.onrender.com/" />
+  <meta name="description" content="Generate engaging AI-powered social media captions and high-traffic hashtags for Instagram, TikTok, LinkedIn & more." />
 
-  <!-- ═══ Open Graph (Facebook, LinkedIn) ═══ -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://ai-caption-genie.onrender.com/" />
-  <meta property="og:title" content="AI Caption Genie — Free AI Social Media Caption & Hashtag Generator" />
-  <meta property="og:description" content="Generate engaging AI-powered social media captions and high-traffic hashtags for Instagram, TikTok, LinkedIn & more." />
-  <meta property="og:image" content="https://ai-caption-genie.onrender.com/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="AI Caption Genie" />
-  <meta property="og:locale" content="en_US" />
-
-  <!-- ═══ Twitter Card ═══ -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://ai-caption-genie.onrender.com/" />
-  <meta name="twitter:title" content="AI Caption Genie — Free AI Social Media Caption & Hashtag Generator" />
-  <meta name="twitter:description" content="Generate engaging AI-powered social media captions and high-traffic hashtags for Instagram, TikTok, LinkedIn & more." />
-  <meta name="twitter:image" content="https://ai-caption-genie.onrender.com/og-image.png" />
-
-  <!-- ═══ JSON-LD Structured Data ═══ -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "AI Caption Genie",
-    "url": "https://ai-caption-genie.onrender.com/",
-    "description": "Generate engaging AI-powered social media captions and high-traffic hashtags.",
-    "applicationCategory": "Multimedia",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "author": {
-      "@type": "Organization",
-      "name": "AI Caption Genie"
-    }
-  }
-  </script>
-
-  <!-- ═══ Favicon ═══ -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
-
-  <!-- ═══ Preconnect for Performance ═══ -->
   <link rel="preconnect" href="https://cdn.tailwindcss.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
-  <!-- ═══ Tailwind CSS ═══ -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <script>
@@ -77,30 +21,27 @@
           fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] },
           colors: {
             brand: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
-            surface: { DEFAULT:'#ffffff',50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1' },
+            surface: { DEFAULT:'#ffffff',50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a' },
           },
           animation: {
-            'spin-slow':'spin 1.5s linear infinite','fade-in':'fadeIn 0.5s ease-out','slide-up':'slideUp 0.4s ease-out','slide-in':'slideIn 0.4s ease-out',
+            'spin-slow':'spin 1.5s linear infinite','fade-in':'fadeIn 0.5s ease-out','slide-up':'slideUp 0.4s ease-out','slide-in':'slideIn 0.4s ease-out','bounce-in':'bounceIn 0.4s ease-out',
           },
           keyframes: {
             fadeIn:{'0%':{opacity:'0',transform:'translateY(10px)'},'100%':{opacity:'1',transform:'translateY(0)'}},
             slideUp:{'0%':{opacity:'0',transform:'translateY(20px)'},'100%':{opacity:'1',transform:'translateY(0)'}},
             slideIn:{'0%':{transform:'translateX(100%)'},'100%':{transform:'translateX(0)'}},
+            bounceIn:{'0%':{opacity:'0',transform:'scale(0.95)'},'50%':{transform:'scale(1.02)'},'100%':{opacity:'1',transform:'scale(1)'}},
           },
         },
       },
     }
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
   <style>
     * { margin:0;padding:0;box-sizing:border-box; }
     body { font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f4f6f9;min-height:100vh;display:flex;flex-direction:column;color:#1e293b; }
 
-    .glass-card { background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(0,0,0,0.06);box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04); }
+    .glass-card { background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border:1px solid rgba(0,0,0,0.06);box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04); }
     .caption-card { transition:all 0.25s ease;border:1px solid rgba(0,0,0,0.06);background:#ffffff; }
     .caption-card:hover { border-color:rgba(59,130,246,0.2);box-shadow:0 2px 12px rgba(59,130,246,0.08);transform:translateY(-2px); }
 
@@ -115,8 +56,6 @@
     ::-webkit-scrollbar-thumb { background:#cbd5e1;border-radius:3px; }
     ::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
 
-
-
     .custom-select-wrapper { position:relative; }
     .custom-select-trigger { display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;font-size:14px;color:#1e293b;cursor:pointer;text-align:left;transition:all .2s;outline:none;font-family:inherit; }
     .custom-select-trigger:hover { border-color:#cbd5e1; }
@@ -124,7 +63,7 @@
     .custom-select-trigger.active { border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15); }
     .custom-select-arrow { width:16px;height:16px;color:#94a3b8;flex-shrink:0;transition:transform .2s; }
     .custom-select-trigger.active .custom-select-arrow { transform:rotate(180deg); }
-    .custom-select-dropdown { position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:100;opacity:0;visibility:hidden;transform:translateY(-4px);transition:all .2s;overflow:hidden; }
+    .custom-select-dropdown { position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:100;opacity:0;visibility:hidden;transform:translateY(-4px);transition:all .2s;overflow:hidden;max-height:260px;overflow-y:auto; }
     .custom-select-dropdown.show { opacity:1;visibility:visible;transform:translateY(0); }
     .custom-select-option { padding:10px 14px;font-size:14px;color:#1e293b;cursor:pointer;transition:background .15s; }
     .custom-select-option:hover { background:#f1f5f9; }
@@ -137,11 +76,63 @@
     input[type=range]::-moz-range-thumb { width:18px;height:18px;border-radius:50%;background:#3b82f6;cursor:pointer;border:2px solid #ffffff; }
 
     .results-enter { animation:slideIn 0.35s ease-out; }
+
+    .login-overlay { position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center; }
+    .login-modal { background:#fff;border-radius:20px;padding:40px;max-width:400px;width:90%;box-shadow:0 24px 64px rgba(0,0,0,0.12);animation:bounceIn 0.4s ease-out; }
+
+    .history-item { transition:all 0.2s;cursor:pointer; }
+    .history-item:hover { background:#f1f5f9; }
+
+    .preview-overlay { position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px; }
+    .preview-card { background:#fff;border-radius:24px;max-width:400px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.15);overflow:hidden;animation:bounceIn 0.3s ease-out; }
+
+    .variation-btn { transition:all 0.2s; }
+    .variation-btn:hover { transform:translateY(-1px); }
+
+    .feedback-btn { transition:all 0.2s; }
+    .feedback-btn.active { color:#2563eb; }
   </style>
 </head>
 <body>
 
   <div id="toast" class="toast"></div>
+
+  <!-- ═══ LOGIN MODAL ═══ -->
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-modal text-center">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-3xl shadow-lg shadow-brand-600/20 mb-4">✨</div>
+      <h2 class="text-2xl font-extrabold text-surface-800 mb-1">Welcome to AI Caption Genie</h2>
+      <p class="text-sm text-surface-500 mb-6">Enter your name to get started — no email needed!</p>
+      <input id="loginNameInput" type="text" maxlength="30" class="w-full rounded-xl border border-surface-200 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500/50 transition-all duration-200 mb-3" placeholder="Your name..." autocomplete="off" />
+      <button id="loginBtn" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-sm shadow-lg shadow-brand-600/20 hover:shadow-brand-500/30 hover:from-brand-500 hover:to-brand-400 active:scale-[0.98] transition-all duration-200">
+        Continue
+      </button>
+      <p class="text-xs text-surface-400 mt-3">Your name stays on your device. No sign-up required.</p>
+    </div>
+  </div>
+
+  <!-- ═══ POST PREVIEW MODAL ═══ -->
+  <div id="previewOverlay" class="preview-overlay hidden" onclick="if(event.target===this)closePreview()">
+    <div class="preview-card">
+      <div class="flex items-center gap-3 p-4 border-b border-surface-100">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-sm" id="previewAvatar">U</div>
+        <div>
+          <p class="text-sm font-semibold text-surface-800" id="previewUsername">username</p>
+          <p class="text-[11px] text-surface-400">AI Caption Genie</p>
+        </div>
+      </div>
+      <div class="p-4">
+        <p class="text-sm text-surface-800 leading-relaxed whitespace-pre-wrap" id="previewCaption"></p>
+      </div>
+      <div class="px-4 pb-4 flex gap-1 flex-wrap" id="previewHashtags"></div>
+      <div class="flex items-center gap-4 px-4 pb-4 text-surface-400 text-sm">
+        <span>❤️ 0</span>
+        <span>💬 0</span>
+        <span>↗️ 0</span>
+      </div>
+      <button onclick="closePreview()" class="w-full py-3 text-sm font-medium text-brand-600 border-t border-surface-100 hover:bg-surface-50 transition-colors">Close</button>
+    </div>
+  </div>
 
   <!-- ═══ INPUT PAGE ═══ -->
   <main id="inputPage" class="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12">
@@ -152,26 +143,37 @@
       <p class="mt-2 sm:mt-3 text-sm sm:text-base text-surface-500 max-w-lg mx-auto leading-relaxed">
         Describe your topic and get <span class="text-brand-600 font-semibold">platform-optimized captions</span> + <span class="text-brand-600 font-semibold">grouped hashtags</span> in seconds.
       </p>
+      <p class="mt-1 text-xs text-surface-400">Welcome, <span id="headerUserName" class="font-semibold text-surface-600"></span></p>
     </header>
+
+    <!-- History Bar -->
+    <div id="historyBar" class="hidden glass-card rounded-2xl p-4 mb-4 animate-fade-in">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-xs font-bold text-surface-600 uppercase tracking-wider">&#x1f4cb; History</h3>
+        <button id="clearHistoryBtn" class="text-[11px] text-surface-400 hover:text-red-500 transition-colors">Clear All</button>
+      </div>
+      <div id="historyList" class="flex gap-2 overflow-x-auto pb-1"></div>
+    </div>
 
     <section class="glass-card rounded-2xl p-5 sm:p-6 mb-6 animate-fade-in" style="animation-delay:0.1s">
 
+      <!-- Row 1: Platform, Tone, Length, Emojis -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
         <div>
           <label class="block text-xs font-semibold text-surface-600 uppercase tracking-wider mb-1.5">Platform</label>
-          <select id="platformSelect" class="w-full rounded-xl border border-surface-200 bg-white px-3.5 py-3 text-sm text-surface-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500/50 transition-all duration-200 cursor-pointer">
+          <select id="platformSelect">
             <option>Instagram</option><option>LinkedIn</option><option>Twitter / X</option><option>TikTok</option><option>Facebook</option>
           </select>
         </div>
         <div>
           <label class="block text-xs font-semibold text-surface-600 uppercase tracking-wider mb-1.5">Tone</label>
-          <select id="toneSelect" class="w-full rounded-xl border border-surface-200 bg-white px-3.5 py-3 text-sm text-surface-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500/50 transition-all duration-200 cursor-pointer">
+          <select id="toneSelect">
             <option>Professional</option><option>Funny</option><option>Inspirational</option><option>Storytelling</option><option>Hype</option>
           </select>
         </div>
         <div>
           <label class="block text-xs font-semibold text-surface-600 uppercase tracking-wider mb-1.5">Length</label>
-          <select id="lengthSelect" class="w-full rounded-xl border border-surface-200 bg-white px-3.5 py-3 text-sm text-surface-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500/50 transition-all duration-200 cursor-pointer">
+          <select id="lengthSelect">
             <option>Very Short</option><option>Short</option><option selected>Medium</option><option>Long</option><option>Very Long</option>
           </select>
         </div>
@@ -183,6 +185,24 @@
             </button>
             <span id="emojiLabel" class="ml-2.5 text-sm text-surface-500">ON</span>
           </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Language, Keywords, Brand Voice -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+        <div>
+          <label class="block text-xs font-semibold text-surface-600 uppercase tracking-wider mb-1.5">Language</label>
+          <select id="languageSelect">
+            <option>English</option><option>Hindi</option><option>Spanish</option><option>French</option><option>German</option><option>Portuguese</option><option>Arabic</option><option>Bengali</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-surface-600 uppercase tracking-wider mb-1.5">Keywords</label>
+          <input id="keywordsInput" type="text" class="w-full rounded-xl border border-surface-200 bg-white px-3.5 py-[10px] text-sm text-surface-800 placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500/50 transition-all duration-200" placeholder="eco, sustainable, green" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-surface-600 uppercase tracking-wider mb-1.5">Brand Voice</label>
+          <input id="brandVoiceInput" type="text" class="w-full rounded-xl border border-surface-200 bg-white px-3.5 py-[10px] text-sm text-surface-800 placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500/50 transition-all duration-200" placeholder="e.g. friendly, witty, bold..." />
         </div>
       </div>
 
@@ -231,6 +251,9 @@
           <span class="text-xs font-semibold text-surface-700">✨ AI Caption Genie</span>
         </div>
         <div class="flex items-center gap-2 text-[10px] text-surface-500">
+          <button id="saveToHistoryBtn" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-surface-500 hover:text-brand-600 hover:bg-brand-50 transition-all duration-200" title="Save to history">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+          </button>
           <span id="resultsMeta" class="hidden sm:inline"></span>
         </div>
       </div>
@@ -238,14 +261,12 @@
 
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
 
-      <!-- Skeleton inside results -->
       <div id="resultsSkeleton" class="hidden space-y-4">
         <div class="skeleton h-12 w-44"></div>
         <div class="skeleton h-28 w-full"></div>
         <div class="skeleton h-28 w-full"></div>
       </div>
 
-      <!-- Results Content -->
       <div id="resultsContent" class="hidden">
 
         <!-- Captions -->
@@ -255,7 +276,7 @@
             Captions
             <span id="resultsCaptionCount" class="ml-auto text-xs font-medium text-surface-500 bg-surface-100 px-2.5 py-0.5 rounded-full"></span>
           </h2>
-          <div id="captionsContainer" class="space-y-2.5"></div>
+          <div id="captionsContainer" class="space-y-3"></div>
         </div>
 
         <!-- Hashtags -->
@@ -274,6 +295,24 @@
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
             Copy All
           </button>
+          <div class="relative flex-1">
+            <button id="exportBtn" class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-surface-200 bg-white text-surface-700 font-medium text-sm hover:bg-surface-50 hover:border-surface-300 active:scale-[0.98] transition-all duration-200">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Export
+            </button>
+            <div id="exportDropdown" class="hidden absolute bottom-full left-0 right-0 mb-1 bg-white border border-surface-200 rounded-xl shadow-lg overflow-hidden">
+              <button class="export-option w-full text-left px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 transition-colors" data-format="txt">Export as TXT</button>
+              <button class="export-option w-full text-left px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 transition-colors" data-format="csv">Export as CSV</button>
+            </div>
+          </div>
+          <button id="shareBtn" class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-surface-200 bg-white text-surface-700 font-medium text-sm hover:bg-surface-50 hover:border-surface-300 active:scale-[0.98] transition-all duration-200">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            Share
+          </button>
+          <button id="previewBtn" class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-surface-200 bg-white text-surface-700 font-medium text-sm hover:bg-surface-50 hover:border-surface-300 active:scale-[0.98] transition-all duration-200">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            Preview
+          </button>
           <button id="generateNewBtn" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-xs shadow-lg shadow-brand-600/20 hover:shadow-brand-500/30 hover:from-brand-500 hover:to-brand-400 active:scale-[0.98] transition-all duration-200">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
             Generate New
@@ -282,8 +321,6 @@
       </div>
     </div>
   </div>
-
-
 
   <script src="/app.js"></script>
 </body>
