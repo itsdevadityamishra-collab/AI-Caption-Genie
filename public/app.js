@@ -61,6 +61,81 @@ function debounce(fn, ms) {
   let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
 }
 
+// ─── Custom Select Dropdown ─────────────────────────────────────────────────
+function closeAllDropdowns() {
+  document.querySelectorAll('.custom-select-dropdown.show').forEach(d => {
+    d.classList.remove('show');
+    d.previousElementSibling.classList.remove('active');
+  });
+}
+document.addEventListener('click', closeAllDropdowns);
+
+function initCustomSelect(id) {
+  const select = document.getElementById(id);
+  const wrapper = document.createElement('div');
+  wrapper.className = 'custom-select-wrapper';
+  select.parentNode.insertBefore(wrapper, select);
+  wrapper.appendChild(select);
+  select.style.cssText = 'position:absolute;opacity:0;pointer-events:none;width:100%;height:100%;top:0;left:0;';
+
+  const trigger = document.createElement('button');
+  trigger.className = 'custom-select-trigger';
+  trigger.type = 'button';
+
+  const textSpan = document.createElement('span');
+  textSpan.textContent = select.options[select.selectedIndex].text;
+
+  trigger.appendChild(textSpan);
+  trigger.insertAdjacentHTML('beforeend',
+    '<svg class="custom-select-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>'
+  );
+  wrapper.appendChild(trigger);
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'custom-select-dropdown';
+
+  [...select.options].forEach((opt, i) => {
+    const item = document.createElement('div');
+    item.className = 'custom-select-option' + (opt.selected ? ' selected' : '');
+    item.dataset.index = i;
+    item.textContent = opt.text;
+    item.addEventListener('click', e => {
+      e.stopPropagation();
+      select.selectedIndex = i;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      textSpan.textContent = opt.text;
+      dropdown.querySelector('.selected')?.classList.remove('selected');
+      item.classList.add('selected');
+      closeAllDropdowns();
+    });
+    dropdown.appendChild(item);
+  });
+
+  wrapper.appendChild(dropdown);
+
+  trigger.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = dropdown.classList.contains('show');
+    closeAllDropdowns();
+    if (!isOpen) {
+      dropdown.classList.add('show');
+      trigger.classList.add('active');
+    }
+  });
+
+  select.addEventListener('change', () => {
+    const idx = select.selectedIndex;
+    textSpan.textContent = select.options[idx].text;
+    dropdown.querySelectorAll('.custom-select-option').forEach(el => {
+      el.classList.toggle('selected', Number(el.dataset.index) === idx);
+    });
+  });
+}
+
+initCustomSelect('platformSelect');
+initCustomSelect('toneSelect');
+initCustomSelect('lengthSelect');
+
 // ─── Sliders ────────────────────────────────────────────────────────────────
 captionCount.addEventListener('input', () => {
   captionCountVal.textContent = captionCount.value;
