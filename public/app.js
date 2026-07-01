@@ -1,7 +1,7 @@
 // ─── DOM ────────────────────────────────────────────────────────────────────
 const toast           = document.getElementById('toast');
 const headerUserName  = document.getElementById('headerUserName');
-const navItems        = document.querySelectorAll('.bottom-nav-item');
+const navItems        = document.querySelectorAll('.bottom-nav-item, .sidebar-item');
 const previewOverlay  = document.getElementById('previewOverlay');
 const previewUsername = document.getElementById('previewUsername');
 const previewCaption  = document.getElementById('previewCaption');
@@ -326,17 +326,19 @@ const capBrandVoice = document.getElementById('capBrandVoice');
 const capGenerateBtn = document.getElementById('capGenerateBtn');
 const capSpinner = document.getElementById('capSpinner');
 const capBtnText = document.querySelector('.capBtnText');
-const capResults = document.getElementById('capResults');
-const capSkeleton = document.getElementById('capSkeleton');
-const capContent = document.getElementById('capContent');
+const capFormView      = document.getElementById('capFormView');
+const capResultsView   = document.getElementById('capResultsView');
+const capBackBtn       = document.getElementById('capBackBtn');
+const capSkeleton      = document.getElementById('capSkeleton');
+const capContent       = document.getElementById('capContent');
 const capCaptionsContainer = document.getElementById('capCaptionsContainer');
-const capCopyAll = document.getElementById('capCopyAll');
-const capExportBtn = document.getElementById('capExportBtn');
+const capCopyAll       = document.getElementById('capCopyAll');
+const capExportBtn     = document.getElementById('capExportBtn');
 const capExportDropdown = document.getElementById('capExportDropdown');
-const capShareBtn = document.getElementById('capShareBtn');
-const capPreviewBtn = document.getElementById('capPreviewBtn');
-const capGenerateNew = document.getElementById('capGenerateNew');
-const capCountDisplay = document.getElementById('capCountDisplay');
+const capShareBtn      = document.getElementById('capShareBtn');
+const capPreviewBtn    = document.getElementById('capPreviewBtn');
+const capGenerateNew   = document.getElementById('capGenerateNew');
+const capCountDisplay  = document.getElementById('capCountDisplay');
 
 function capLoading(v) {
   capGenerateBtn.disabled = v;
@@ -345,13 +347,8 @@ function capLoading(v) {
 }
 
 function capShowResults(v) {
-  if (v) {
-    capResults.classList.remove('hidden');
-    capSkeleton.classList.add('hidden');
-    capContent.classList.remove('hidden');
-  } else {
-    capResults.classList.add('hidden');
-  }
+  capFormView.classList.toggle('hidden', v);
+  capResultsView.classList.toggle('active', v);
 }
 
 async function handleCapGenerate() {
@@ -360,7 +357,8 @@ async function handleCapGenerate() {
 
   const cc = Number(capCount.value);
   capLoading(true);
-  capResults.classList.remove('hidden');
+  capResultsView.classList.add('active');
+  capFormView.classList.add('hidden');
   capSkeleton.classList.remove('hidden');
   capContent.classList.add('hidden');
 
@@ -383,9 +381,6 @@ async function handleCapGenerate() {
     capCountDisplay.textContent = `${data.captions.length} captions`;
     capSkeleton.classList.add('hidden');
     capContent.classList.remove('hidden');
-    setTimeout(() => {
-      document.getElementById('captionsTabScroll').scrollTo({ top: capResults.offsetTop - 120, behavior: 'smooth' });
-    }, 100);
   } catch (err) {
     capSkeleton.classList.add('hidden');
     capContent.classList.add('hidden');
@@ -396,11 +391,8 @@ async function handleCapGenerate() {
 }
 
 capGenerateBtn.addEventListener('click', handleCapGenerate);
-capGenerateNew.addEventListener('click', () => {
-  capResults.classList.add('hidden');
-  document.getElementById('captionsTabScroll').scrollTo({ top: 0, behavior: 'smooth' });
-  capTopic.focus();
-});
+capBackBtn.addEventListener('click', () => capShowResults(false));
+capGenerateNew.addEventListener('click', () => capShowResults(false));
 
 capTopic.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); handleCapGenerate(); }
@@ -474,19 +466,26 @@ const tagKeywords = document.getElementById('tagKeywords');
 const tagGenerateBtn = document.getElementById('tagGenerateBtn');
 const tagSpinner = document.getElementById('tagSpinner');
 const tagBtnText = document.querySelector('.tagBtnText');
-const tagResults = document.getElementById('tagResults');
-const tagSkeleton = document.getElementById('tagSkeleton');
-const tagContent = document.getElementById('tagContent');
+const tagFormView      = document.getElementById('tagFormView');
+const tagResultsView   = document.getElementById('tagResultsView');
+const tagBackBtn       = document.getElementById('tagBackBtn');
+const tagSkeleton      = document.getElementById('tagSkeleton');
+const tagContent       = document.getElementById('tagContent');
 const tagHashtagsContainer = document.getElementById('tagHashtagsContainer');
-const tagCopyAll = document.getElementById('tagCopyAll');
-const tagShareBtn = document.getElementById('tagShareBtn');
-const tagGenerateNew = document.getElementById('tagGenerateNew');
-const tagCountDisplay = document.getElementById('tagCountDisplay');
+const tagCopyAll       = document.getElementById('tagCopyAll');
+const tagShareBtn      = document.getElementById('tagShareBtn');
+const tagGenerateNew   = document.getElementById('tagGenerateNew');
+const tagCountDisplay  = document.getElementById('tagCountDisplay');
 
 function tagLoading(v) {
   tagGenerateBtn.disabled = v;
   tagBtnText.textContent = v ? 'Generating...' : '#️⃣ Generate Hashtags';
   tagSpinner.classList.toggle('hidden', !v);
+}
+
+function tagShowResults(v) {
+  tagFormView.classList.toggle('hidden', v);
+  tagResultsView.classList.toggle('active', v);
 }
 
 async function handleTagGenerate() {
@@ -495,7 +494,8 @@ async function handleTagGenerate() {
 
   const hc = Number(tagCount.value);
   tagLoading(true);
-  tagResults.classList.remove('hidden');
+  tagResultsView.classList.add('active');
+  tagFormView.classList.add('hidden');
   tagSkeleton.classList.remove('hidden');
   tagContent.classList.add('hidden');
 
@@ -519,9 +519,6 @@ async function handleTagGenerate() {
     tagCountDisplay.textContent = `${total} tags`;
     tagSkeleton.classList.add('hidden');
     tagContent.classList.remove('hidden');
-    setTimeout(() => {
-      document.getElementById('tagsTabScroll').scrollTo({ top: tagResults.offsetTop - 120, behavior: 'smooth' });
-    }, 100);
   } catch (err) {
     tagSkeleton.classList.add('hidden');
     tagContent.classList.add('hidden');
@@ -532,11 +529,8 @@ async function handleTagGenerate() {
 }
 
 tagGenerateBtn.addEventListener('click', handleTagGenerate);
-tagGenerateNew.addEventListener('click', () => {
-  tagResults.classList.add('hidden');
-  document.getElementById('tagsTabScroll').scrollTo({ top: 0, behavior: 'smooth' });
-  tagTopic.focus();
-});
+tagBackBtn.addEventListener('click', () => tagShowResults(false));
+tagGenerateNew.addEventListener('click', () => tagShowResults(false));
 
 tagTopic.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); handleTagGenerate(); }
@@ -721,4 +715,17 @@ window.addEventListener('beforeinstallprompt', e => {
 
 window.addEventListener('appinstalled', () => {
   document.getElementById('installAppBtn')?.remove();
+});
+
+// Install App button in More tab
+const installBtn2 = document.getElementById('installAppBtn2');
+installBtn2.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const result = await deferredPrompt.userChoice;
+    if (result.outcome === 'accepted') installBtn2.textContent = '✅ Installed!';
+    deferredPrompt = null;
+  } else {
+    showToast('Open in Chrome and tap "Install App" in the address bar.');
+  }
 });
