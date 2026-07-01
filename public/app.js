@@ -178,8 +178,37 @@ function initCustomSelect(id) {
     if (!isOpen) {
       dropdown.classList.add('show');
       trigger.classList.add('active');
+  }
+});
+
+// ─── PWA / Service Worker ────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+// ─── Install Prompt ──────────────────────────────────────────────────────────
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.createElement('button');
+  btn.id = 'installAppBtn';
+  btn.className = 'fixed bottom-4 right-4 z-[999] inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-xs shadow-lg shadow-brand-600/30 hover:shadow-brand-500/40 active:scale-[0.98] transition-all duration-200 animate-bounce-in';
+  btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Install App';
+  btn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      if (result.outcome === 'accepted') btn.remove();
+      deferredPrompt = null;
     }
   });
+  document.body.appendChild(btn);
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installAppBtn')?.remove();
+});
 
   select.addEventListener('change', () => {
     const idx = select.selectedIndex;
