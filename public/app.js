@@ -770,16 +770,15 @@ adminLoginBtn.addEventListener('click', async () => {
     const res = await fetch('/api/admin/visitors', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pass }),
+      body: JSON.stringify({ name, password: pass }),
     });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Invalid password');
+      throw new Error(err.error || 'Invalid credentials');
     }
 
     const data = await res.json();
-    adminTotalVisits.textContent = data.total;
     adminUniqueUsers.textContent = data.unique;
 
     adminVisitorsTable.innerHTML = data.visitors.slice().reverse().map(v => `

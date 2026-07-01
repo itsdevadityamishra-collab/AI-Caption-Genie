@@ -229,13 +229,13 @@ app.post('/api/track', (req, res) => {
 });
 
 app.post('/api/admin/visitors', (req, res) => {
-  const { password } = req.body;
-  if (password !== ADMIN_KEY) {
-    return res.status(401).json({ error: 'Invalid password' });
+  const { name, password } = req.body;
+  if (name !== 'Aditya6143' || password !== '6143') {
+    return res.status(401).json({ error: 'Invalid credentials' });
   }
   const visitors = getVisitors();
   const unique = [...new Set(visitors.map(v => v.name.toLowerCase()))].length;
-  res.json({ total: visitors.length, unique, visitors });
+  res.json({ unique, visitors });
 });
 
 app.get('*', (req, res) => {
