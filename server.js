@@ -36,26 +36,22 @@ async function callGroq(systemPrompt, userMessage, maxTokens) {
 
 app.post('/api/generate', async (req, res) => {
   const {
-    mode = 'both',
     topic,
     tone = 'professional',
     platform = 'Instagram',
     emojis = true,
-    captionLength = 'medium',
     captionCount = 4,
     hashtagCount = 20,
-    language = 'English',
-    keywords = '',
-    brandVoice = '',
   } = req.body;
 
   if (!topic || topic.trim().length === 0) {
     return res.status(400).json({ error: 'Please describe your content topic first.' });
   }
 
-  const cc = mode === 'hashtags' ? 0 : Math.min(Math.max(Number(captionCount) || 4, 1), 100);
-  const hc = mode === 'captions' ? 0 : Math.min(Math.max(Number(hashtagCount) || 20, 1), 50);
+  const cc = Math.min(Math.max(Number(captionCount) || 4, 1), 100);
+  const hc = Math.min(Math.max(Number(hashtagCount) || 20, 1), 50);
 
+  // Distribute hashtags roughly: 40% highTraffic, 35% niche, 25% location
   const ht = Math.round(hc * 0.4);
   const nn = Math.round(hc * 0.35);
   const ll = hc - ht - nn;
@@ -68,109 +64,48 @@ app.post('/api/generate', async (req, res) => {
     hype: 'High-energy, bold, and hype-building. Use emojis and excitement.',
   };
 
-  const lengthGuide = {
-    'very short': '10-40 characters. Extremely brief, punchy, and concise. Just a few words.',
-    short: '40-80 characters. Short and to the point, minimal wording.',
-    medium: '80-160 characters. Balanced length, standard social media caption.',
-    long: '160-280 characters. Detailed and descriptive captions.',
-    'very long': '280-500 characters. In-depth, comprehensive captions with rich detail.',
-  };
-  const lengthRule = lengthGuide[captionLength] || lengthGuide.medium;
-
   const emojiRule = emojis
     ? 'Use relevant emojis in captions to boost engagement.'
     : 'Do NOT use any emojis in captions. Keep them clean and text-only.';
 
-  const langRule = `Write all captions and hashtags in ${language}.`;
-  const keywordRule = keywords
-    ? `Naturally include these keywords in the captions: "${keywords}".`
-    : '';
-  const voiceRule = brandVoice
-    ? `Follow this brand voice/style: ${brandVoice}.`
-    : '';
+  const systemPrompt = `You are a professional social media marketing expert and copywriter.
 
-  const generateCaptions = mode === 'both' || mode === 'captions';
-  const generateHashtags = mode === 'both' || mode === 'hashtags';
-
-  let systemPrompt = 'You are a professional social media marketing expert and copywriter.\n\n';
-
-  if (generateCaptions) {
-    systemPrompt += `Generate exactly ${cc} ${platform}-optimized social media captions in a "${tone}" tone.
+Generate exactly ${cc} ${platform}-optimized social media captions in a "${tone}" tone.
 Tone guide: ${toneGuide[tone] || toneGuide.professional}
 ${emojiRule}
+
+Also generate exactly ${hc} relevant hashtags split into three groups:
+- "highTraffic": Broad, popular tags (${ht} tags)
+- "niche": Topic-specific, targeted tags (${nn} tags)
+- "location": Location or community tags (${ll} tags)
+
+IMPORTANT: Return ONLY valid JSON — no markdown, no code fences, no extra text:
+{
+  "captions": [
+    { "id": 1, "text": "caption text here" },
+    { "id": 2, "text": "caption text here" }
+  ],
+  "hashtags": {
+    "highTraffic": ["#tag1", "#tag2", ...],
+    "niche": ["#tag3", "#tag4", ...],
+    "location": ["#tag5", "#tag6", ...]
+  }
+}
 
 Rules for captions:
 - Creative, engaging, and conversational.
 - Tone must be strictly "${tone}": ${toneGuide[tone] || toneGuide.professional}
 - Make them specific to ${platform} platform style.
-- Caption length: ${lengthRule}
+- Keep each caption between 50-280 characters.
 - No hashtags inside captions.
-- Write in ${language}.
-- Generate exactly ${cc} captions.\n\n`;
-  }
-
-  if (generateHashtags) {
-    const ht = Math.round(hc * 0.4);
-    const nn = Math.round(hc * 0.35);
-    const ll = hc - ht - nn;
-    systemPrompt += `Also generate exactly ${hc} relevant hashtags split into three groups:
-- "highTraffic": Broad, popular tags (${ht} tags)
-- "niche": Topic-specific, targeted tags (${nn} tags)
-- "location": Location or community tags (${ll} tags)
+- Generate exactly ${cc} captions.
 
 Rules for hashtags:
 - highTraffic: exactly ${ht} broad popular tags.
 - niche: exactly ${nn} specific relevant tags.
 - location: exactly ${ll} community/location tags.
 - Each prefixed with #, no commas.
-- Generate exactly ${hc} hashtags total.\n\n`;
-  }
-
-  systemPrompt += `${langRule}
-${keywordRule}
-${voiceRule}
-
-IMPORTANT: Return ONLY valid JSON${
-  generateCaptions && generateHashtags ? '' : generateCaptions ? ' with captions array' : ' with hashtags object'
-} — no markdown, no code fences, no extra text:`;
-
-  if (generateCaptions && generateHashtags) {
-    systemPrompt += `
-{
-  "captions": [
-    { "id": 1, "text": "caption text here" },
-    { "id": 2, "text": "caption text here" }
-  ],
-  "hashtags": {
-    "highTraffic": ["#tag1", "#tag2", ...],
-    "niche": ["#tag3", "#tag4", ...],
-    "location": ["#tag5", "#tag6", ...]
-  }
-}`;
-  } else if (generateCaptions) {
-    systemPrompt += `
-{
-  "captions": [
-    { "id": 1, "text": "caption text here" },
-    { "id": 2, "text": "caption text here" }
-  ],
-  "hashtags": {
-    "highTraffic": [],
-    "niche": [],
-    "location": []
-  }
-}`;
-  } else if (generateHashtags) {
-    systemPrompt += `
-{
-  "captions": [],
-  "hashtags": {
-    "highTraffic": ["#tag1", "#tag2", ...],
-    "niche": ["#tag3", "#tag4", ...],
-    "location": ["#tag5", "#tag6", ...]
-  }
-}`;
-  }
+- Generate exactly ${hc} hashtags total.`;
 
   const maxTokens = Math.min(400 + cc * 60 + hc * 8, 8000);
 
@@ -186,12 +121,8 @@ IMPORTANT: Return ONLY valid JSON${
       else throw new Error('Failed to parse AI response');
     }
 
-    if (generateCaptions) {
-      if (!data.captions || !Array.isArray(data.captions) || data.captions.length < 1) {
-        throw new Error('Invalid captions format from AI');
-      }
-    } else {
-      data.captions = [];
+    if (!data.captions || !Array.isArray(data.captions) || data.captions.length < 1) {
+      throw new Error('Invalid captions format from AI');
     }
 
     let h = data.hashtags;
@@ -199,12 +130,10 @@ IMPORTANT: Return ONLY valid JSON${
       const a = Math.ceil(h.length * 0.4), b = Math.ceil(h.length * 0.35);
       h = { highTraffic: h.slice(0, a), niche: h.slice(a, a + b), location: h.slice(a + b) };
     } else if (h && typeof h === 'object') {
-      if (generateHashtags) {
-        const all = [...(h.highTraffic || []), ...(h.niche || []), ...(h.location || [])];
-        if (all.length > 0 && (!h.highTraffic?.length || !h.niche?.length || !h.location?.length)) {
-          const a = Math.ceil(all.length * 0.4), b = Math.ceil(all.length * 0.35);
-          h = { highTraffic: all.slice(0, a), niche: all.slice(a, a + b), location: all.slice(a + b) };
-        }
+      const all = [...(h.highTraffic || []), ...(h.niche || []), ...(h.location || [])];
+      if (all.length > 0 && (!h.highTraffic?.length || !h.niche?.length || !h.location?.length)) {
+        const a = Math.ceil(all.length * 0.4), b = Math.ceil(all.length * 0.35);
+        h = { highTraffic: all.slice(0, a), niche: all.slice(a, a + b), location: all.slice(a + b) };
       }
     } else {
       h = { highTraffic: [], niche: [], location: [] };
@@ -220,32 +149,6 @@ IMPORTANT: Return ONLY valid JSON${
     });
   }
 });
-
-app.post('/api/variation', async (req, res) => {
-  const { text, direction } = req.body;
-  if (!text || !direction) {
-    return res.status(400).json({ error: 'Missing text or direction' });
-  }
-
-  const promptMap = {
-    longer: 'Make this caption LONGER by adding more detail, context, or descriptive language. Keep the same tone and message. Return ONLY the new caption text.',
-    shorter: 'Make this caption SHORTER and more concise. Cut fluff while keeping the core message. Return ONLY the new caption text.',
-    funnier: 'Rewrite this caption to be FUNNIER and more humorous. Add wit, wordplay, or a light-hearted twist. Return ONLY the new caption text.',
-  };
-
-  const systemPrompt = promptMap[direction] || promptMap.longer;
-
-  try {
-    const raw = await callGroq(systemPrompt, `Original caption: "${text}"`, 300);
-    const cleaned = raw.replace(/^["']|["']$/g, '').trim();
-    if (!cleaned || cleaned.length < 3) throw new Error('Empty response');
-    res.json({ text: cleaned });
-  } catch (err) {
-    console.error('Variation error:', err.message);
-    res.status(500).json({ error: 'Failed to generate variation.', text });
-  }
-});
-
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

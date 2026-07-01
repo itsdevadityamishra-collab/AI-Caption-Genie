@@ -1,24 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>AI Caption Genie — Free AI Social Media Caption & Hashtag Generator</title>
-  <meta name="description" content="Generate engaging AI-powered social media captions and high-traffic hashtags for Instagram, TikTok, LinkedIn & more." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Caption Genie — Social Media Caption & Hashtag Generator</title>
+  <meta name="description" content="Generate engaging AI-powered social media captions and high-traffic hashtags in seconds." />
 
-  <meta name="theme-color" content="#f4f6f9" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Caption Genie" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <link rel="apple-touch-icon" href="/icon.svg" />
-  <link rel="manifest" href="/manifest.json" />
-
-  <link rel="icon" href="/icon.svg" />
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
 
   <script>
@@ -26,448 +13,195 @@
       darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'Segoe UI', 'system-ui', 'sans-serif'],
-            jakarta: ['Plus Jakarta Sans', 'sans-serif'],
-            lora: ['Lora', 'Georgia', 'serif'],
-            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
-          },
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] },
           colors: {
             brand: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
-            surface: { DEFAULT:'#ffffff',50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a' },
+            surface: { DEFAULT:'#0a0e1a',50:'#0f1424',100:'#131a2e',200:'#1a233e',300:'#222d4f' },
+          },
+          animation: {
+            'spin-slow':'spin 1.5s linear infinite','fade-in':'fadeIn 0.5s ease-out','slide-up':'slideUp 0.4s ease-out','slide-in':'slideIn 0.4s ease-out',
+          },
+          keyframes: {
+            fadeIn:{'0%':{opacity:'0',transform:'translateY(10px)'},'100%':{opacity:'1',transform:'translateY(0)'}},
+            slideUp:{'0%':{opacity:'0',transform:'translateY(20px)'},'100%':{opacity:'1',transform:'translateY(0)'}},
+            slideIn:{'0%':{transform:'translateX(100%)'},'100%':{transform:'translateX(0)'}},
           },
         },
       },
     }
   </script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
   <style>
     * { margin:0;padding:0;box-sizing:border-box; }
-    body { font-family:'Inter','Segoe UI','system-ui',sans-serif;background:#f8fafc;min-height:100vh;display:flex;flex-direction:column;color:#1e293b;-webkit-tap-highlight-color:transparent;overscroll-behavior:none; }
+    body { font-family:'Inter',system-ui,-apple-system,sans-serif;background:#0a0e1a;min-height:100vh;display:flex;flex-direction:column;color:#e2e8f0; }
 
-    .font-mono { font-family:'ui-monospace','SFMono-Regular','Menlo','Monaco','Consolas',monospace; }
-    .font-jakarta { font-family:'Plus Jakarta Sans','sans-serif'; }
-    .font-lora { font-family:'Lora','Georgia',serif; }
-    .font-inter { font-family:'Inter','Segoe UI','system-ui',sans-serif; }
+    .glass-card { background:rgba(19,26,46,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06);box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+    .caption-card { transition:all 0.25s ease;border:1px solid rgba(255,255,255,0.06); }
+    .caption-card:hover { border-color:rgba(96,165,250,0.3);box-shadow:0 4px 20px rgba(59,130,246,0.1);transform:translateY(-2px); }
 
-    .app-bar { background:linear-gradient(135deg,#2563eb,#1d4ed8);padding:max(env(safe-area-inset-top,8px),8px) 16px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(37,99,235,.25); }
-    .app-bar-title { font-family:'ui-monospace','SFMono-Regular','Menlo','Monaco','Consolas',monospace;font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px; }
-    .app-bar-sub { font-size:10px;color:rgba(255,255,255,.7);font-family:'Inter','Segoe UI',sans-serif; }
-
-    .bottom-nav { background:#fff;border-top:1px solid #e2e8f0;display:flex;position:sticky;bottom:0;z-index:50;padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -2px 12px rgba(0,0,0,.04); }
-    .bottom-nav-item { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0 6px;cursor:pointer;transition:all .15s;color:#94a3b8;font-size:10px;gap:2px;border:none;background:none;font-family:'Inter','Segoe UI',sans-serif; }
-    .bottom-nav-item.active { color:#2563eb; }
-    .bottom-nav-item svg { width:20px;height:20px; }
-    .bottom-nav-item span { font-weight:600;font-family:'Plus Jakarta Sans','sans-serif';font-size:11px; }
-
-    .tab-panel { display:none;flex-direction:column;flex:1;overflow-y:auto; }
-    .tab-panel.active { display:flex; }
-
-    .tab-scroll { flex:1;overflow-y:auto;padding:12px 16px 8px; }
-
-    .section-title { font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;font-family:'Plus Jakarta Sans','sans-serif'; }
-    .input-field { width:100%;padding:12px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;font-size:14px;color:#1e293b;outline:none;transition:all .2s; }
-    .input-field:focus { border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12);background:#fff; }
-    .input-field::placeholder { color:#94a3b8; }
-
-    .card { background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04);padding:16px; }
-
-    .btn-primary { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(37,99,235,.25);font-family:inherit; }
-    .btn-primary:active { transform:scale(.97);opacity:.9; }
-    .btn-primary:disabled { opacity:.5;cursor:not-allowed;transform:none; }
-
-    .btn-outline { display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:12px;border:1.5px solid #e2e8f0;background:#fff;color:#475569;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit; }
-    .btn-outline:active { background:#f8fafc;transform:scale(.97); }
-
-    .switch-track { position:relative;display:inline-flex;height:28px;width:48px;border-radius:14px;background:#cbd5e1;cursor:pointer;transition:background .2s;border:none;flex-shrink:0; }
-    .switch-track.active { background:#3b82f6; }
-    .switch-thumb { position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15);transition:transform .2s; }
-    .switch-track.active .switch-thumb { transform:translateX(20px); }
-
-    .caption-card { background:#fff;border-radius:14px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:all .2s;border:1px solid #f1f5f9; }
-    .caption-card:active { transform:scale(.99); }
-    .caption-text { font-family:'Lora','Georgia',serif;font-size:15px;font-weight:500;color:#1e293b;line-height:1.65;margin-bottom:8px; }
-
-    .toast { position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;color:#fff;padding:12px 24px;border-radius:14px;font-size:13px;font-weight:500;opacity:0;transition:all .35s ease;pointer-events:none;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.12); }
+    .toast { position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;color:#e2e8f0;padding:10px 24px;border-radius:12px;font-size:14px;font-weight:500;opacity:0;transition:all 0.35s ease;pointer-events:none;z-index:999;border:1px solid rgba(255,255,255,0.06); }
     .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
 
-    .skeleton { background:linear-gradient(90deg,#f1f5f9 25%,#f8fafc 50%,#f1f5f9 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;border-radius:12px; }
+    .skeleton { background:linear-gradient(90deg,#1a233e 25%,#222d4f 50%,#1a233e 75%);background-size:200% 100%;animation:shimmer 1.4s ease infinite;border-radius:12px; }
     @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
-    input[type=range] { -webkit-appearance:none;appearance:none;height:5px;background:#e2e8f0;border-radius:3px;outline:none;width:100%; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#3b82f6;cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(59,130,246,.3); }
-    input[type=range]::-moz-range-thumb { width:20px;height:20px;border-radius:50%;background:#3b82f6;cursor:pointer;border:3px solid #fff; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:#334155;border-radius:3px; }
+    ::-webkit-scrollbar-thumb:hover { background:#475569; }
 
-    .custom-select-wrapper { position:relative; }
-    .custom-select-trigger { display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;font-size:13px;color:#1e293b;cursor:pointer;text-align:left;transition:all .2s;outline:none;font-family:inherit; }
-    .custom-select-trigger:active { background:#f1f5f9; }
-    .custom-select-trigger.active { border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12);background:#fff; }
-    .custom-select-arrow { width:16px;height:16px;color:#94a3b8;flex-shrink:0;transition:transform .2s; }
-    .custom-select-trigger.active .custom-select-arrow { transform:rotate(180deg); }
-    .custom-select-dropdown { position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:100;opacity:0;visibility:hidden;transform:translateY(-4px);transition:all .2s;overflow:hidden;max-height:260px;overflow-y:auto; }
-    .custom-select-dropdown.show { opacity:1;visibility:visible;transform:translateY(0); }
-    .custom-select-option { padding:12px 14px;font-size:13px;color:#1e293b;cursor:pointer;transition:background .1s; }
-    .custom-select-option:active { background:#f1f5f9; }
-    .custom-select-option.selected { color:#2563eb;background:#eff6ff;font-weight:600; }
-    .custom-select-option + .custom-select-option { border-top:1px solid #f1f5f9; }
+    select { appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px; }
 
-    .modal-overlay { position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.4);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:24px; }
+    input[type=range] { -webkit-appearance:none;appearance:none;height:6px;background:#1a233e;border-radius:3px;outline:none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:#3b82f6;cursor:pointer;border:2px solid #0a0e1a;box-shadow:0 0 8px rgba(59,130,246,0.3); }
+    input[type=range]::-moz-range-thumb { width:18px;height:18px;border-radius:50%;background:#3b82f6;cursor:pointer;border:2px solid #0a0e1a; }
 
-    @keyframes slideUp { 0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)} }
-    @keyframes bounceIn { 0%{opacity:0;transform:scale(.92)}50%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)} }
-    @keyframes spin { 0%{transform:rotate(0deg)}100%{transform:rotate(360deg)} }
-
-    ::-webkit-scrollbar { width:4px; }
-    ::-webkit-scrollbar-thumb { background:#e2e8f0;border-radius:2px; }
-
-    .tab-results { animation:slideUp .3s ease-out; }
-
-    .history-item { background:#fff;border-radius:14px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);border:1px solid #f1f5f9;cursor:pointer;transition:all .2s; }
-    .history-item:active { background:#f8fafc;transform:scale(.99); }
-
-    .tag-badge { display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid;cursor:pointer;transition:all .15s;font-family:'Inter','Segoe UI',sans-serif; }
-    .tag-badge:active { transform:scale(.96); }
-
-    .modal-content { background:#fff;border-radius:24px;max-width:360px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.15);overflow:hidden;animation:bounceIn .3s ease-out; }
-
-    /* ═══ SIDEBAR (desktop) ═══ */
-    .sidebar { display:none; }
-    .main-layout { flex:1;display:flex;flex-direction:column;overflow:hidden; }
-    .content-area { flex:1;display:flex;flex-direction:column;overflow:hidden; }
-
-    @media (min-width:768px) {
-      body { flex-direction:column; }
-      .main-layout { flex-direction:row; }
-      .sidebar { display:flex;flex-direction:column;width:220px;background:#fff;
-                 border-right:1px solid #e2e8f0;flex-shrink:0;overflow-y:auto;padding:16px 10px; }
-      .sidebar-item { display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;
-                      border-radius:12px;border:none;background:none;cursor:pointer;
-                      font-size:13px;font-weight:600;color:#64748b;text-align:left;
-                      transition:all .15s;font-family:'Inter','Segoe UI',sans-serif;margin-bottom:2px; }
-      .sidebar-item:active { background:#f1f5f9; }
-      .sidebar-item.active { background:#eff6ff;color:#2563eb; }
-      .sidebar-item svg { width:18px;height:18px;flex-shrink:0; }
-      .bottom-nav { display:none; }
-      .app-bar { position:static; }
-      .tab-panel { height:100%; }
-      .tab-scroll { height:100%; }
-    }
-
-    /* ═══ Full-screen results within tab ═══ */
-    .results-view { display:none;flex-direction:column;flex:1;overflow:hidden; }
-    .results-view.active { display:flex; }
-    .results-header { display:flex;align-items:center;gap:12px;padding:12px 16px;
-                      border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0; }
-    .results-header button { background:none;border:none;padding:4px;cursor:pointer;
-                             color:#475569;font-size:18px;font-family:inherit;display:flex;align-items:center; }
-    .results-header span:first-of-type { font-size:14px;font-weight:700;color:#1e293b;flex:1; }
-    .results-body { flex:1;overflow-y:auto;padding:12px 16px; }
-
-    @media (display-mode: standalone) { .app-bar { padding-top:max(env(safe-area-inset-top,0px),8px); } }
+    .results-enter { animation:slideIn 0.35s ease-out; }
   </style>
 </head>
-<body>
+<body class="dark">
 
   <div id="toast" class="toast"></div>
 
-  <!-- ═══ APP BAR ═══ -->
-  <header class="app-bar">
-    <div>
-      <div class="app-bar-title">
-        <svg width="18" height="18" viewBox="0 0 100 100" fill="none" style="vertical-align:-3px;margin-right:4px;">
-          <rect width="100" height="100" rx="22" fill="url(#g)"/>
-          <defs><linearGradient id="g" x1="0" y1="0" x2="100" y2="100"><stop stop-color="#3b82f6"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient></defs>
-          <path d="M34 40c0-8 8-14 16-14s16 6 16 14-8 14-16 14-16-6-16-14z" fill="#fff" opacity=".3"/>
-          <path d="M50 30l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8z" fill="#fbbf24"/>
-          <path d="M38 58l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z" fill="#fff" opacity=".6"/>
-          <path d="M62 62l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5 1.5-4z" fill="#fff" opacity=".5"/>
-          <text x="50" y="86" text-anchor="middle" fill="#fff" font-size="22" font-weight="800" font-family="Inter,sans-serif">CG</text>
-        </svg>
-        Caption Genie
-      </div>
-      <div class="app-bar-sub">Welcome, <span id="headerUserName">Guest</span></div>
-    </div>
-  </header>
+  <!-- ═══ INPUT PAGE ═══ -->
+  <main id="inputPage" class="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
 
-  <div class="main-layout">
+    <header class="text-center mb-4 sm:mb-6 animate-fade-in">
+      <div class="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white text-xl sm:text-2xl shadow-lg shadow-brand-600/20 mb-2 sm:mb-3">✨</div>
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">AI Caption Genie</h1>
+      <p class="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-400 max-w-lg mx-auto leading-relaxed">
+        Describe your topic and get <span class="text-brand-300 font-semibold">platform-optimized captions</span> + <span class="text-brand-300 font-semibold">grouped hashtags</span> in seconds.
+      </p>
+    </header>
 
-    <!-- ═══ SIDEBAR (desktop) ═══ -->
-    <aside class="sidebar" id="sidebar">
-      <button class="sidebar-item active" data-tab="captions">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-        <span>Captions</span>
-      </button>
-      <button class="sidebar-item" data-tab="tags">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-        <span>Tags</span>
-      </button>
-      <button class="sidebar-item" data-tab="history">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span>History</span>
-      </button>
-      <button class="sidebar-item" data-tab="more">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
-        <span>More</span>
-      </button>
-    </aside>
+    <section class="glass-card rounded-2xl p-4 sm:p-5 mb-4 animate-fade-in" style="animation-delay:0.1s">
 
-    <div class="content-area">
-
-      <!-- ═══ TAB CONTENT ═══ -->
-  <div id="tabContainer" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
-
-    <!-- ══════ TAB 1: CAPTIONS ══════ -->
-    <div id="captionsTab" class="tab-panel active">
-
-      <!-- Form View -->
-      <div id="capFormView" class="tab-scroll" style="display:flex;flex-direction:column;">
-
-        <div class="card" style="margin-bottom:12px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-            <div>
-              <div class="section-title">Platform</div>
-              <select id="capPlatform"><option>Instagram</option><option>LinkedIn</option><option>Twitter / X</option><option>TikTok</option><option>Facebook</option></select>
-            </div>
-            <div>
-              <div class="section-title">Tone</div>
-              <select id="capTone"><option>Professional</option><option>Funny</option><option>Inspirational</option><option>Storytelling</option><option>Hype</option></select>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-            <div>
-              <div class="section-title">Length</div>
-              <select id="capLength"><option>Very Short</option><option>Short</option><option selected>Medium</option><option>Long</option><option>Very Long</option></select>
-            </div>
-            <div>
-              <div class="section-title">Language</div>
-              <select id="capLanguage"><option>English</option><option>Hindi</option><option>Spanish</option><option>French</option><option>German</option><option>Portuguese</option><option>Arabic</option><option>Bengali</option></select>
-            </div>
-          </div>
-          <div style="margin-bottom:10px;">
-            <div class="section-title">Keywords</div>
-            <input id="capKeywords" type="text" class="input-field" placeholder="eco, sustainable, green" />
-          </div>
-          <div style="margin-bottom:10px;">
-            <div class="section-title">Brand Voice</div>
-            <input id="capBrandVoice" type="text" class="input-field" placeholder="e.g. friendly, witty, bold..." />
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-            <span style="font-size:13px;font-weight:600;color:#1e293b;">Emojis</span>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span id="capEmojiLabel" style="font-size:12px;font-weight:600;color:#64748b;">ON</span>
-              <button id="capEmojiToggle" class="switch-track active" role="switch" aria-checked="true">
-                <span class="switch-thumb"></span>
-              </button>
-            </div>
-          </div>
-          <div style="margin-bottom:8px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-              <span style="font-size:13px;font-weight:600;color:#1e293b;">Count</span>
-              <span id="capCountVal" style="font-size:14px;font-weight:700;color:#2563eb;">4</span>
-            </div>
-            <input type="range" id="capCount" min="1" max="100" value="4" />
-          </div>
-          <div style="margin-bottom:4px;">
-            <div class="section-title">Topic</div>
-            <textarea id="capTopic" rows="3" class="input-field" style="resize:none;" placeholder="What's your post about?"></textarea>
-          </div>
-        </div>
-
-        <button id="capGenerateBtn" class="btn-primary" style="margin-bottom:12px;">
-          <svg id="capSpinner" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" style="animation:spin 1.5s linear infinite;">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="31.4 31.4" opacity=".3" />
-            <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-          </svg>
-          <span class="capBtnText">✨ Generate Captions</span>
-        </button>
-
-      </div>
-
-      <!-- Results View -->
-      <div id="capResultsView" class="results-view">
-        <div class="results-header">
-          <button id="capBackBtn">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-          </button>
-          <span>📝 Captions</span>
-          <span id="capCountDisplay" style="font-size:11px;color:#94a3b8;background:#f1f5f9;padding:2px 10px;border-radius:20px;"></span>
-        </div>
-        <div class="results-body">
-          <div id="capSkeleton" class="hidden" style="display:flex;flex-direction:column;gap:12px;">
-            <div class="skeleton" style="height:40px;width:120px;"></div>
-            <div class="skeleton" style="height:100px;"></div>
-            <div class="skeleton" style="height:100px;"></div>
-          </div>
-          <div id="capContent" class="hidden">
-            <div id="capCaptionsContainer" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-              <button id="capCopyAll" class="btn-outline" style="width:100%;">📋 Copy All</button>
-              <button id="capExportBtn" class="btn-outline" style="width:100%;">📥 Export</button>
-              <button id="capShareBtn" class="btn-outline" style="width:100%;">🔗 Share</button>
-              <button id="capPreviewBtn" class="btn-outline" style="width:100%;">👁️ Preview</button>
-            </div>
-            <div id="capExportDropdown" class="hidden" style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.1);overflow:hidden;margin-bottom:12px;">
-              <button class="capExportOption" style="width:100%;text-align:left;padding:12px 16px;font-size:13px;background:none;border:none;cursor:pointer;color:#1e293b;font-family:inherit;" data-format="txt">📄 Export as TXT</button>
-              <button class="capExportOption" style="width:100%;text-align:left;padding:12px 16px;font-size:13px;background:none;border:none;cursor:pointer;color:#1e293b;border-top:1px solid #f1f5f9;font-family:inherit;" data-format="csv">📊 Export as CSV</button>
-            </div>
-            <button id="capGenerateNew" class="btn-primary">✨ Generate New</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ══════ TAB 2: TAGS ══════ -->
-    <div id="tagsTab" class="tab-panel">
-
-      <!-- Form View -->
-      <div id="tagFormView" class="tab-scroll" style="display:flex;flex-direction:column;">
-
-        <div class="card" style="margin-bottom:12px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-            <div>
-              <div class="section-title">Platform</div>
-              <select id="tagPlatform"><option>Instagram</option><option>LinkedIn</option><option>Twitter / X</option><option>TikTok</option><option>Facebook</option></select>
-            </div>
-            <div>
-              <div class="section-title">Language</div>
-              <select id="tagLanguage"><option>English</option><option>Hindi</option><option>Spanish</option><option>French</option><option>German</option><option>Portuguese</option><option>Arabic</option><option>Bengali</option></select>
-            </div>
-          </div>
-          <div style="margin-bottom:10px;">
-            <div class="section-title">Keywords</div>
-            <input id="tagKeywords" type="text" class="input-field" placeholder="eco, sustainable, green" />
-          </div>
-          <div style="margin-bottom:8px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-              <span style="font-size:13px;font-weight:600;color:#1e293b;">Hashtags</span>
-              <span id="tagCountVal" style="font-size:14px;font-weight:700;color:#2563eb;">20</span>
-            </div>
-            <input type="range" id="tagCount" min="5" max="50" value="20" />
-          </div>
-          <div style="margin-bottom:4px;">
-            <div class="section-title">Topic</div>
-            <textarea id="tagTopic" rows="5" class="input-field" style="resize:none;min-height:100px;" placeholder="What topic for hashtags?"></textarea>
-          </div>
-        </div>
-
-        <button id="tagGenerateBtn" class="btn-primary" style="margin-bottom:12px;">
-          <svg id="tagSpinner" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" style="animation:spin 1.5s linear infinite;">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="31.4 31.4" opacity=".3" />
-            <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-          </svg>
-          <span class="tagBtnText">#️⃣ Generate Hashtags</span>
-        </button>
-
-      </div>
-
-      <!-- Results View -->
-      <div id="tagResultsView" class="results-view">
-        <div class="results-header">
-          <button id="tagBackBtn">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-          </button>
-          <span>🏷️ Hashtags</span>
-          <span id="tagCountDisplay" style="font-size:11px;color:#94a3b8;background:#f1f5f9;padding:2px 10px;border-radius:20px;"></span>
-        </div>
-        <div class="results-body">
-          <div id="tagSkeleton" class="hidden" style="display:flex;flex-direction:column;gap:12px;">
-            <div class="skeleton" style="height:100px;"></div>
-            <div class="skeleton" style="height:100px;"></div>
-          </div>
-          <div id="tagContent" class="hidden">
-            <div id="tagHashtagsContainer" style="margin-bottom:16px;"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-              <button id="tagCopyAll" class="btn-outline" style="width:100%;">📋 Copy All</button>
-              <button id="tagShareBtn" class="btn-outline" style="width:100%;">🔗 Share</button>
-            </div>
-            <button id="tagGenerateNew" class="btn-primary">#️⃣ Generate New</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ══════ TAB 3: HISTORY ══════ -->
-    <div id="historyTab" class="tab-panel">
-      <div class="tab-scroll">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-          <span class="section-title" style="margin-bottom:0;">📋 Saved History</span>
-          <button id="clearHistoryBtn" style="font-size:11px;color:#94a3b8;border:none;background:none;cursor:pointer;font-family:inherit;">Clear All</button>
-        </div>
-        <div id="historyList" style="display:flex;flex-direction:column;gap:8px;"></div>
-        <p id="historyEmpty" class="hidden" style="text-align:center;padding:40px 0;color:#94a3b8;font-size:13px;">No saved history yet.<br/>Generate captions and save them!</p>
-      </div>
-    </div>
-
-    <!-- ══════ TAB 4: MORE ══════ -->
-    <div id="moreTab" class="tab-panel">
-      <div class="tab-scroll">
-        <div class="card" style="margin-bottom:12px;">
-          <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px;">⚙️ Settings & Tools</div>
-          <button id="installAppBtn2" class="btn-primary" style="margin-bottom:10px;background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 16px rgba(5,150,105,.3);">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            Install App
-          </button>
-          <button id="moreExportBtn" class="btn-outline" style="width:100%;">📥 Export Saved</button>
-        </div>
-        <div class="card" style="margin-bottom:12px;">
-          <div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px;">ℹ️ About</div>
-          <p style="font-size:12px;color:#64748b;line-height:1.6;">
-            <strong>AI Caption Genie</strong> v2.0<br/>
-            Powered by Groq AI (Llama 3.3 70B)<br/>
-            Generate captions and hashtags for social media.
-          </p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ═══ BOTTOM NAV ═══ -->
-  <nav class="bottom-nav" id="bottomNav">
-    <button class="bottom-nav-item active" data-tab="captions">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-      <span>Captions</span>
-    </button>
-    <button class="bottom-nav-item" data-tab="tags">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-      <span>Tags</span>
-    </button>
-    <button class="bottom-nav-item" data-tab="history">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      <span>History</span>
-    </button>
-    <button class="bottom-nav-item" data-tab="more">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
-      <span>More</span>
-    </button>
-      </nav>
-
-    </div><!-- /content-area -->
-
-  </div><!-- /main-layout -->
-
-  <!-- ═══ POST PREVIEW MODAL ═══ -->
-  <div id="previewOverlay" class="hidden modal-overlay" style="padding:20px;">
-    <div class="modal-content">
-      <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #f1f5f9;">
-        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#2563eb);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;" id="previewAvatar">U</div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
         <div>
-          <p style="font-size:14px;font-weight:600;color:#1e293b;" id="previewUsername">username</p>
-          <p style="font-size:10px;color:#94a3b8;">AI Caption Genie</p>
+          <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Platform</label>
+          <select id="platformSelect" class="w-full rounded-xl border border-white/10 bg-surface/50 px-3 py-2.5 text-xs text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200 cursor-pointer">
+            <option>Instagram</option><option>LinkedIn</option><option>Twitter / X</option><option>TikTok</option><option>Facebook</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Tone</label>
+          <select id="toneSelect" class="w-full rounded-xl border border-white/10 bg-surface/50 px-3 py-2.5 text-xs text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200 cursor-pointer">
+            <option>Professional</option><option>Funny</option><option>Inspirational</option><option>Storytelling</option><option>Hype</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Emojis</label>
+          <div class="flex items-center h-[34px]">
+            <button id="emojiToggle" class="relative inline-flex h-6 w-10 shrink-0 cursor-pointer items-center rounded-full border border-white/10 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-brand-500/50 bg-brand-600" role="switch" aria-checked="true">
+              <span id="emojiThumb" class="inline-block h-4 w-4 translate-x-[1.125rem] rounded-full bg-white shadow-sm transition-transform duration-300"></span>
+            </button>
+            <span id="emojiLabel" class="ml-2 text-xs text-gray-400">ON</span>
+          </div>
         </div>
       </div>
-      <div style="padding:16px;">
-        <p style="font-size:14px;color:#1e293b;line-height:1.6;white-space:pre-wrap;" id="previewCaption"></p>
+
+      <!-- Count Sliders -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Captions</label>
+            <span id="captionCountVal" class="text-xs font-bold text-brand-300">4</span>
+          </div>
+          <input type="range" id="captionCount" min="1" max="100" value="4" class="w-full" />
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Hashtags</label>
+            <span id="hashtagCountVal" class="text-xs font-bold text-brand-300">20</span>
+          </div>
+          <input type="range" id="hashtagCount" min="1" max="50" value="20" class="w-full" />
+        </div>
       </div>
-      <div style="padding:0 16px 12px;display:flex;flex-wrap:wrap;gap:4px;" id="previewHashtags"></div>
-      <div style="display:flex;gap:16px;padding:0 16px 16px;color:#94a3b8;font-size:13px;">
-        <span>❤️ 0</span><span>💬 0</span><span>↗️ 0</span>
+
+      <label class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Topic</label>
+      <textarea id="topicInput" rows="3" class="w-full resize-none rounded-xl border border-white/10 bg-surface/50 px-3 py-2.5 text-gray-100 placeholder-gray-500 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200" placeholder="e.g. A new eco-friendly water bottle made from recycled ocean plastic..."></textarea>
+
+      <button id="generateBtn" class="mt-3 w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-brand-600/20 hover:shadow-brand-500/30 hover:from-brand-500 hover:to-brand-400 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+        <svg id="btnSpinner" class="hidden w-5 h-5 animate-spin-slow" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="31.4 31.4" class="opacity-30" />
+          <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+        </svg>
+        <span id="btnText">Magic Generate</span>
+      </button>
+    </section>
+
+  </main>
+
+  <!-- ═══ RESULTS PAGE ═══ -->
+  <div id="resultsPage" class="hidden fixed inset-0 z-50 bg-[#0a0e1a] overflow-y-auto">
+    <div class="sticky top-0 z-10 bg-surface/90 backdrop-blur-xl border-b border-white/5">
+      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <button id="backBtn" class="p-1.5 rounded-xl hover:bg-white/10 transition-all duration-200" title="Back">
+            <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <span class="text-xs font-semibold text-gray-300">✨ AI Caption Genie</span>
+        </div>
+        <div class="flex items-center gap-2 text-[10px] text-gray-500">
+          <span id="resultsMeta" class="hidden sm:inline"></span>
+        </div>
       </div>
-      <button onclick="closePreview()" style="width:100%;padding:14px;font-size:13px;font-weight:600;color:#2563eb;border:none;border-top:1px solid #f1f5f9;background:none;cursor:pointer;font-family:inherit;">Close</button>
+    </div>
+
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+
+      <!-- Skeleton inside results -->
+      <div id="resultsSkeleton" class="hidden space-y-3">
+        <div class="skeleton h-10 w-40"></div>
+        <div class="skeleton h-24 w-full"></div>
+        <div class="skeleton h-24 w-full"></div>
+      </div>
+
+      <!-- Results Content -->
+      <div id="resultsContent" class="hidden">
+
+        <!-- Captions -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 mb-4">
+          <h2 class="text-xs font-bold text-gray-300 tracking-wide uppercase mb-3 flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h8m-4 4h4" /></svg>
+            Captions
+            <span id="resultsCaptionCount" class="ml-auto text-[10px] font-medium text-gray-500 bg-surface-200 px-2 py-0.5 rounded-full"></span>
+          </h2>
+          <div id="captionsContainer" class="space-y-2"></div>
+        </div>
+
+        <!-- Hashtags -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 mb-4">
+          <h2 class="text-xs font-bold text-gray-300 tracking-wide uppercase mb-3 flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m4 16l4-16M6 9h14M4 15h14" /></svg>
+            Hashtags
+            <span id="resultsHashtagCount" class="ml-auto text-[10px] font-medium text-gray-500 bg-surface-200 px-2 py-0.5 rounded-full"></span>
+          </h2>
+          <div id="hashtagsContainer"></div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <button id="copyAllBtn" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-medium text-xs hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-200">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+            Copy All
+          </button>
+          <button id="generateNewBtn" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold text-xs shadow-lg shadow-brand-600/20 hover:shadow-brand-500/30 hover:from-brand-500 hover:to-brand-400 active:scale-[0.98] transition-all duration-200">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            Generate New
+          </button>
+        </div>
+      </div>
     </div>
   </div>
+
+
 
   <script src="/app.js"></script>
 </body>
