@@ -75,7 +75,7 @@ emojiToggle.addEventListener('click', () => {
   emojisEnabled = !emojisEnabled;
   emojiThumb.style.transform = emojisEnabled ? 'translateX(1.375rem)' : 'translateX(0.1875rem)';
   emojiToggle.classList.toggle('bg-brand-600', emojisEnabled);
-  emojiToggle.classList.toggle('bg-gray-600', !emojisEnabled);
+  emojiToggle.classList.toggle('bg-surface-300', !emojisEnabled);
   emojiLabel.textContent = emojisEnabled ? 'ON' : 'OFF';
 });
 
@@ -119,9 +119,9 @@ function setResultsLoading(v) {
 // ─── Render Captions ────────────────────────────────────────────────────────
 function renderCaptions(captions) {
   captionsContainer.innerHTML = captions.map(c => `
-    <div class="caption-card relative bg-surface-100 rounded-xl p-3.5 sm:p-4 pr-12 sm:pr-14 animate-slide-up">
-      <p class="text-sm sm:text-base text-gray-200 leading-relaxed">${escapeHtml(c.text)}</p>
-      <button class="copy-caption-btn absolute top-2.5 right-2.5 sm:top-3 sm:right-3 p-1.5 rounded-lg text-gray-500 hover:text-brand-300 hover:bg-brand-500/10 transition-all duration-200"
+    <div class="caption-card relative bg-white rounded-xl p-3.5 sm:p-4 pr-12 sm:pr-14 animate-slide-up">
+      <p class="text-sm sm:text-base text-surface-800 leading-relaxed">${escapeHtml(c.text)}</p>
+      <button class="copy-caption-btn absolute top-2.5 right-2.5 sm:top-3 sm:right-3 p-1.5 rounded-lg text-surface-400 hover:text-brand-600 hover:bg-brand-50 transition-all duration-200"
         data-text="${escapeHtml(c.text)}" title="Copy caption">
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
       </button>
@@ -135,9 +135,9 @@ function renderCaptions(captions) {
 // ─── Render Hashtags ────────────────────────────────────────────────────────
 function renderHashtags(tags) {
   const groups = [
-    { key: 'highTraffic', label: 'High Traffic', color: 'bg-brand-500/15 text-brand-300 border-brand-500/20 hover:bg-brand-500/25' },
-    { key: 'niche', label: 'Niche', color: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20 hover:bg-emerald-500/25' },
-    { key: 'location', label: 'Location', color: 'bg-amber-500/15 text-amber-300 border-amber-500/20 hover:bg-amber-500/25' },
+    { key: 'highTraffic', label: 'High Traffic', color: 'bg-brand-50 text-brand-700 border-brand-200 hover:bg-brand-100' },
+    { key: 'niche', label: 'Niche', color: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' },
+    { key: 'location', label: 'Location', color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100' },
   ];
 
   let html = '';
@@ -146,9 +146,9 @@ function renderHashtags(tags) {
     if (list.length === 0) continue;
     html += `
       <div class="mb-3 last:mb-0">
-        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+        <p class="text-[10px] font-semibold text-surface-600 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
           <span class="w-1 h-1 rounded-full ${g.color.split(' ')[0]}"></span>
-          ${g.label} <span class="text-[10px] font-normal text-gray-600">(${list.length})</span>
+          ${g.label} <span class="text-[10px] font-normal text-surface-400">(${list.length})</span>
         </p>
         <div class="flex flex-wrap gap-1.5">
           ${list.map(tag => `
