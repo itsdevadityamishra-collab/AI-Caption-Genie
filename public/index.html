@@ -8,9 +8,6 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
   <link rel="preconnect" href="https://cdn.tailwindcss.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
 
   <script>
@@ -18,7 +15,7 @@
       darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] },
+          fontFamily: { sans: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'] },
           colors: {
             brand: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
             surface: { DEFAULT:'#ffffff',50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a' },
@@ -39,7 +36,7 @@
 
   <style>
     * { margin:0;padding:0;box-sizing:border-box; }
-    body { font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f4f6f9;min-height:100vh;display:flex;flex-direction:column;color:#1e293b; }
+    body { font-family:'ui-monospace','SFMono-Regular','Menlo','Monaco','Consolas',monospace;background:#f4f6f9;min-height:100vh;display:flex;flex-direction:column;color:#1e293b; }
 
     .glass-card { background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border:1px solid rgba(0,0,0,0.06);box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04); }
     .caption-card { transition:all 0.25s ease;border:1px solid rgba(0,0,0,0.06);background:#ffffff; }
