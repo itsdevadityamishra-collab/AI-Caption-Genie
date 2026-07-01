@@ -1,10 +1,26 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ADMIN_KEY = process.env.ADMIN_KEY || 'admin123';
+const DATA_DIR = path.join(__dirname, 'data');
+const VISITORS_FILE = path.join(DATA_DIR, 'visitors.json');
+
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(VISITORS_FILE)) fs.writeFileSync(VISITORS_FILE, '[]');
+
+function getVisitors() {
+  try { return JSON.parse(fs.readFileSync(VISITORS_FILE, 'utf8')); }
+  catch { return []; }
+}
+
+function saveVisitors(data) {
+  fs.writeFileSync(VISITORS_FILE, JSON.stringify(data, null, 2));
+}
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -197,6 +213,42 @@ app.post('/api/variation', async (req, res) => {
     console.error('Variation error:', err.message);
     res.status(500).json({ error: 'Failed to generate variation.', text });
   }
+});
+
+app.post('/api/track', (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'Name required' });
+
+  const visitors = getVisitors();
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const entry = { name, ip, timestamp: new Date().toISOString() };
+  visitors.push(entry);
+  saveVisitors(visitors);
+  console.log(`👤 Visitor: ${name} from ${ip} (total: ${visitors.length})`);
+  res.json({ ok: true, total: visitors.length });
+});
+
+app.get('/api/visitors', (req, res) => {
+  if (req.query.key !== ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized. Use ?key=your-admin-key' });
+  }
+  const visitors = getVisitors();
+  const unique = [...new Set(visitors.map(v => v.name.toLowerCase()))].length;
+  res.json({ total: visitors.length, unique, visitors });
+});
+
+app.get('/admin', (req, res) => {
+  if (req.query.key !== ADMIN_KEY) {
+    return res.status(401).send('Unauthorized');
+  }
+  const visitors = getVisitors();
+  const unique = [...new Set(visitors.map(v => v.name.toLowerCase()))];
+  res.send(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Visitors</title><style>body{font-family:sans-serif;background:#f4f6f9;padding:20px;color:#1e293b}table{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1)}th{background:#f1f5f9;text-align:left;padding:12px;font-size:12px;text-transform:uppercase;color:#475569}td{padding:12px;border-top:1px solid #e2e8f0;font-size:14px}.badge{display:inline-block;background:#eff6ff;color:#2563eb;padding:2px 10px;border-radius:20px;font-size:13px;font-weight:600}h1{font-size:24px;margin-bottom:4px}.sub{color:#64748b;font-size:14px;margin-bottom:20px}</style></head><body>
+  <h1>👥 Visitor Analytics</h1>
+  <p class="sub">Total visits: ${visitors.length} · Unique people: ${unique.length}</p>
+  <table><thead><tr><th>Name</th><th>IP</th><th>Time</th></tr></thead><tbody>
+  ${visitors.slice().reverse().map(v => `<tr><td>${v.name}</td><td>${v.ip}</td><td>${new Date(v.timestamp).toLocaleString()}</td></tr>`).join('')}
+  </tbody></table></body></html>`);
 });
 
 app.get('*', (req, res) => {

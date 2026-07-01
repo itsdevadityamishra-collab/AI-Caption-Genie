@@ -89,6 +89,11 @@ function checkLogin() {
     userName = stored;
     headerUserName.textContent = userName;
     loginOverlay.classList.add('hidden');
+    fetch('/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: stored }),
+    }).catch(() => {});
   }
 }
 
@@ -101,6 +106,11 @@ loginBtn.addEventListener('click', () => {
   loginOverlay.classList.add('hidden');
   renderHistory();
   showToast('Welcome, ' + name + '!');
+  fetch('/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  }).catch(() => {});
 });
 
 loginNameInput.addEventListener('keydown', e => {
