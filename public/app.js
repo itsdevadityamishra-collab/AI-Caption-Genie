@@ -99,6 +99,7 @@ loginBtn.addEventListener('click', () => {
   localStorage.setItem('acg_user', name);
   headerUserName.textContent = name;
   loginOverlay.classList.add('hidden');
+  renderHistory();
   showToast('Welcome, ' + name + '!');
 });
 
@@ -226,12 +227,21 @@ function clearHistory() {
   renderHistory();
 }
 
+function syncCustomSelect(id) {
+  const sel = document.getElementById(id);
+  if (sel) sel.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
 function loadHistoryItem(entry) {
   topicInput.value = entry.topic;
   platformSelect.value = entry.platform;
+  syncCustomSelect('platformSelect');
   toneSelect.value = entry.tone;
+  syncCustomSelect('toneSelect');
   lengthSelect.value = entry.length;
+  syncCustomSelect('lengthSelect');
   languageSelect.value = entry.language || 'English';
+  syncCustomSelect('languageSelect');
   keywordsInput.value = entry.keywords || '';
   brandVoiceInput.value = entry.brandVoice || '';
   captionCount.value = entry.captionCount || 4;
@@ -244,8 +254,6 @@ function loadHistoryItem(entry) {
   emojiToggle.classList.toggle('bg-surface-300', !emojisEnabled);
   emojiLabel.textContent = emojisEnabled ? 'ON' : 'OFF';
   showToast('History restored!');
-  document.querySelector('.custom-select-wrapper:first-child .custom-select-trigger')?.click();
-  setTimeout(() => { closeAllDropdowns(); }, 100);
 }
 
 function renderHistory() {
@@ -301,39 +309,6 @@ function setResultsLoading(v) {
   } else {
     resultsSkeleton.classList.add('hidden');
     resultsContent.classList.remove('hidden');
-  }
-}
-
-// ─── Caption Variation ──────────────────────────────────────────────────────
-async function generateVariation(text, direction) {
-  const prompt = `Rewrite the following social media caption to make it ${direction}. Return ONLY the new caption text, nothing else.\n\nOriginal: "${text}"`;
-  try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${(()=>{try{const e=document.createElement('script');e.src='/api/key';document.body.appendChild(e);return''}catch{return''}})()}`,
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.8,
-        max_tokens: 200,
-      }),
-    });
-    if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-    return data.choices[0]?.message?.content?.replace(/^["']|["']$/g, '').trim() || text;
-  } catch {
-    // Fallback: use the main API via server
-    const res = await fetch('/api/variation', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, direction }),
-    });
-    if (!res.ok) throw new Error('Failed');
-    const data = await res.json();
-    return data.text;
   }
 }
 
