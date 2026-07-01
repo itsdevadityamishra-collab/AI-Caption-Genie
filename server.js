@@ -52,6 +52,7 @@ async function callGroq(systemPrompt, userMessage, maxTokens) {
 
 app.post('/api/generate', async (req, res) => {
   const {
+    mode = 'both',
     topic,
     tone = 'professional',
     platform = 'Instagram',
@@ -68,8 +69,8 @@ app.post('/api/generate', async (req, res) => {
     return res.status(400).json({ error: 'Please describe your content topic first.' });
   }
 
-  const cc = Math.min(Math.max(Number(captionCount) || 4, 1), 100);
-  const hc = Math.min(Math.max(Number(hashtagCount) || 20, 1), 50);
+  const cc = mode === 'hashtags' ? 0 : Math.min(Math.max(Number(captionCount) || 4, 1), 100);
+  const hc = mode === 'captions' ? 0 : Math.min(Math.max(Number(hashtagCount) || 20, 1), 50);
 
   const ht = Math.round(hc * 0.4);
   const nn = Math.round(hc * 0.35);
@@ -104,21 +105,53 @@ app.post('/api/generate', async (req, res) => {
     ? `Follow this brand voice/style: ${brandVoice}.`
     : '';
 
-  const systemPrompt = `You are a professional social media marketing expert and copywriter.
+  const generateCaptions = mode === 'both' || mode === 'captions';
+  const generateHashtags = mode === 'both' || mode === 'hashtags';
 
-Generate exactly ${cc} ${platform}-optimized social media captions in a "${tone}" tone.
+  let systemPrompt = 'You are a professional social media marketing expert and copywriter.\n\n';
+
+  if (generateCaptions) {
+    systemPrompt += `Generate exactly ${cc} ${platform}-optimized social media captions in a "${tone}" tone.
 Tone guide: ${toneGuide[tone] || toneGuide.professional}
 ${emojiRule}
-${langRule}
-${keywordRule}
-${voiceRule}
 
-Also generate exactly ${hc} relevant hashtags split into three groups:
+Rules for captions:
+- Creative, engaging, and conversational.
+- Tone must be strictly "${tone}": ${toneGuide[tone] || toneGuide.professional}
+- Make them specific to ${platform} platform style.
+- Caption length: ${lengthRule}
+- No hashtags inside captions.
+- Write in ${language}.
+- Generate exactly ${cc} captions.\n\n`;
+  }
+
+  if (generateHashtags) {
+    const ht = Math.round(hc * 0.4);
+    const nn = Math.round(hc * 0.35);
+    const ll = hc - ht - nn;
+    systemPrompt += `Also generate exactly ${hc} relevant hashtags split into three groups:
 - "highTraffic": Broad, popular tags (${ht} tags)
 - "niche": Topic-specific, targeted tags (${nn} tags)
 - "location": Location or community tags (${ll} tags)
 
-IMPORTANT: Return ONLY valid JSON — no markdown, no code fences, no extra text:
+Rules for hashtags:
+- highTraffic: exactly ${ht} broad popular tags.
+- niche: exactly ${nn} specific relevant tags.
+- location: exactly ${ll} community/location tags.
+- Each prefixed with #, no commas.
+- Generate exactly ${hc} hashtags total.\n\n`;
+  }
+
+  systemPrompt += `${langRule}
+${keywordRule}
+${voiceRule}
+
+IMPORTANT: Return ONLY valid JSON${
+  generateCaptions && generateHashtags ? '' : generateCaptions ? ' with captions array' : ' with hashtags object'
+} — no markdown, no code fences, no extra text:`;
+
+  if (generateCaptions && generateHashtags) {
+    systemPrompt += `
 {
   "captions": [
     { "id": 1, "text": "caption text here" },
@@ -129,23 +162,31 @@ IMPORTANT: Return ONLY valid JSON — no markdown, no code fences, no extra text
     "niche": ["#tag3", "#tag4", ...],
     "location": ["#tag5", "#tag6", ...]
   }
-}
-
-Rules for captions:
-- Creative, engaging, and conversational.
-- Tone must be strictly "${tone}": ${toneGuide[tone] || toneGuide.professional}
-- Make them specific to ${platform} platform style.
-- Caption length: ${lengthRule}
-- No hashtags inside captions.
-- Write in ${language}.
-- Generate exactly ${cc} captions.
-
-Rules for hashtags:
-- highTraffic: exactly ${ht} broad popular tags.
-- niche: exactly ${nn} specific relevant tags.
-- location: exactly ${ll} community/location tags.
-- Each prefixed with #, no commas.
-- Generate exactly ${hc} hashtags total.`;
+}`;
+  } else if (generateCaptions) {
+    systemPrompt += `
+{
+  "captions": [
+    { "id": 1, "text": "caption text here" },
+    { "id": 2, "text": "caption text here" }
+  ],
+  "hashtags": {
+    "highTraffic": [],
+    "niche": [],
+    "location": []
+  }
+}`;
+  } else if (generateHashtags) {
+    systemPrompt += `
+{
+  "captions": [],
+  "hashtags": {
+    "highTraffic": ["#tag1", "#tag2", ...],
+    "niche": ["#tag3", "#tag4", ...],
+    "location": ["#tag5", "#tag6", ...]
+  }
+}`;
+  }
 
   const maxTokens = Math.min(400 + cc * 60 + hc * 8, 8000);
 
@@ -161,8 +202,12 @@ Rules for hashtags:
       else throw new Error('Failed to parse AI response');
     }
 
-    if (!data.captions || !Array.isArray(data.captions) || data.captions.length < 1) {
-      throw new Error('Invalid captions format from AI');
+    if (generateCaptions) {
+      if (!data.captions || !Array.isArray(data.captions) || data.captions.length < 1) {
+        throw new Error('Invalid captions format from AI');
+      }
+    } else {
+      data.captions = [];
     }
 
     let h = data.hashtags;
@@ -170,10 +215,12 @@ Rules for hashtags:
       const a = Math.ceil(h.length * 0.4), b = Math.ceil(h.length * 0.35);
       h = { highTraffic: h.slice(0, a), niche: h.slice(a, a + b), location: h.slice(a + b) };
     } else if (h && typeof h === 'object') {
-      const all = [...(h.highTraffic || []), ...(h.niche || []), ...(h.location || [])];
-      if (all.length > 0 && (!h.highTraffic?.length || !h.niche?.length || !h.location?.length)) {
-        const a = Math.ceil(all.length * 0.4), b = Math.ceil(all.length * 0.35);
-        h = { highTraffic: all.slice(0, a), niche: all.slice(a, a + b), location: all.slice(a + b) };
+      if (generateHashtags) {
+        const all = [...(h.highTraffic || []), ...(h.niche || []), ...(h.location || [])];
+        if (all.length > 0 && (!h.highTraffic?.length || !h.niche?.length || !h.location?.length)) {
+          const a = Math.ceil(all.length * 0.4), b = Math.ceil(all.length * 0.35);
+          h = { highTraffic: all.slice(0, a), niche: all.slice(a, a + b), location: all.slice(a + b) };
+        }
       }
     } else {
       h = { highTraffic: [], niche: [], location: [] };
