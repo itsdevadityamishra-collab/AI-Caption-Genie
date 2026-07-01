@@ -711,3 +711,94 @@ topicInput.style.height = topicInput.scrollHeight + 'px';
 
 // ─── Init History ───────────────────────────────────────────────────────────
 renderHistory();
+
+// ─── Admin Panel ─────────────────────────────────────────────────────────────
+const adminOverlay      = document.getElementById('adminOverlay');
+const adminModal        = document.getElementById('adminModal');
+const adminLoginView    = document.getElementById('adminLoginView');
+const adminDataView     = document.getElementById('adminDataView');
+const adminNameInput    = document.getElementById('adminNameInput');
+const adminPassInput    = document.getElementById('adminPassInput');
+const adminLoginBtn     = document.getElementById('adminLoginBtn');
+const adminLogoutBtn    = document.getElementById('adminLogoutBtn');
+const adminCloseBtn     = document.getElementById('adminCloseBtn');
+const adminError        = document.getElementById('adminError');
+const adminTotalVisits  = document.getElementById('adminTotalVisits');
+const adminUniqueUsers  = document.getElementById('adminUniqueUsers');
+const adminVisitorsTable = document.getElementById('adminVisitorsTable');
+const adminPanelBtn     = document.getElementById('adminPanelBtn');
+
+adminPanelBtn.addEventListener('click', () => {
+  adminOverlay.classList.remove('hidden');
+  adminLoginView.classList.remove('hidden');
+  adminDataView.classList.add('hidden');
+  adminError.classList.add('hidden');
+  adminNameInput.value = '';
+  adminPassInput.value = '';
+  adminNameInput.focus();
+});
+
+adminCloseBtn.addEventListener('click', () => adminOverlay.classList.add('hidden'));
+adminLogoutBtn.addEventListener('click', () => {
+  adminLoginView.classList.remove('hidden');
+  adminDataView.classList.add('hidden');
+  adminError.classList.add('hidden');
+});
+
+adminOverlay.addEventListener('click', e => {
+  if (e.target === adminOverlay) adminOverlay.classList.add('hidden');
+});
+
+adminPassInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') adminLoginBtn.click();
+});
+
+adminLoginBtn.addEventListener('click', async () => {
+  const name = adminNameInput.value.trim() || 'Admin';
+  const pass = adminPassInput.value.trim();
+  if (!pass) {
+    adminError.textContent = 'Please enter the admin password.';
+    adminError.classList.remove('hidden');
+    return;
+  }
+
+  adminLoginBtn.textContent = 'Checking...';
+  adminLoginBtn.disabled = true;
+  adminError.classList.add('hidden');
+
+  try {
+    const res = await fetch('/api/admin/visitors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pass }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Invalid password');
+    }
+
+    const data = await res.json();
+    adminTotalVisits.textContent = data.total;
+    adminUniqueUsers.textContent = data.unique;
+
+    adminVisitorsTable.innerHTML = data.visitors.slice().reverse().map(v => `
+      <div class="flex items-center justify-between bg-surface-50 rounded-xl px-4 py-2.5">
+        <div>
+          <p class="text-sm font-medium text-surface-800">${escapeHtml(v.name)}</p>
+          <p class="text-[10px] text-surface-400">${new Date(v.timestamp).toLocaleString()}</p>
+        </div>
+        <span class="text-[10px] text-surface-400">${escapeHtml(v.ip)}</span>
+      </div>
+    `).join('');
+
+    adminLoginView.classList.add('hidden');
+    adminDataView.classList.remove('hidden');
+  } catch (err) {
+    adminError.textContent = err.message || 'Login failed. Try again.';
+    adminError.classList.remove('hidden');
+  } finally {
+    adminLoginBtn.textContent = 'Login';
+    adminLoginBtn.disabled = false;
+  }
+});

@@ -228,27 +228,14 @@ app.post('/api/track', (req, res) => {
   res.json({ ok: true, total: visitors.length });
 });
 
-app.get('/api/visitors', (req, res) => {
-  if (req.query.key !== ADMIN_KEY) {
-    return res.status(401).json({ error: 'Unauthorized. Use ?key=your-admin-key' });
+app.post('/api/admin/visitors', (req, res) => {
+  const { password } = req.body;
+  if (password !== ADMIN_KEY) {
+    return res.status(401).json({ error: 'Invalid password' });
   }
   const visitors = getVisitors();
   const unique = [...new Set(visitors.map(v => v.name.toLowerCase()))].length;
   res.json({ total: visitors.length, unique, visitors });
-});
-
-app.get('/admin', (req, res) => {
-  if (req.query.key !== ADMIN_KEY) {
-    return res.status(401).send('Unauthorized');
-  }
-  const visitors = getVisitors();
-  const unique = [...new Set(visitors.map(v => v.name.toLowerCase()))];
-  res.send(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Visitors</title><style>body{font-family:sans-serif;background:#f4f6f9;padding:20px;color:#1e293b}table{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1)}th{background:#f1f5f9;text-align:left;padding:12px;font-size:12px;text-transform:uppercase;color:#475569}td{padding:12px;border-top:1px solid #e2e8f0;font-size:14px}.badge{display:inline-block;background:#eff6ff;color:#2563eb;padding:2px 10px;border-radius:20px;font-size:13px;font-weight:600}h1{font-size:24px;margin-bottom:4px}.sub{color:#64748b;font-size:14px;margin-bottom:20px}</style></head><body>
-  <h1>👥 Visitor Analytics</h1>
-  <p class="sub">Total visits: ${visitors.length} · Unique people: ${unique.length}</p>
-  <table><thead><tr><th>Name</th><th>IP</th><th>Time</th></tr></thead><tbody>
-  ${visitors.slice().reverse().map(v => `<tr><td>${v.name}</td><td>${v.ip}</td><td>${new Date(v.timestamp).toLocaleString()}</td></tr>`).join('')}
-  </tbody></table></body></html>`);
 });
 
 app.get('*', (req, res) => {
